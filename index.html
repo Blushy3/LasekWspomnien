@@ -75,42 +75,37 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .gallery-item img, .gallery-item video {
-            width: 200px;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .gallery-item:hover img, .gallery-item:hover video {
+        .gallery-item:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .format-label {
+        .gallery-item img, .gallery-item video {
+            width: 200px;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .format-label, .date-label {
             position: absolute;
-            top: 5px;
-            right: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
             padding: 2px 5px;
             border-radius: 5px;
             font-size: 12px;
             pointer-events: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .format-label {
+            top: 5px;
+            right: 10px;
         }
 
         .date-label {
-            position: absolute;
             top: 5px;
             left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            padding: 2px 5px;
-            border-radius: 5px;
-            font-size: 12px;
-            pointer-events: none;
         }
 
         .description {
@@ -247,16 +242,21 @@
             const formatLabelElement = document.createElement('div');
             formatLabelElement.classList.add('format-label');
             formatLabelElement.textContent = formatLabel;
-            mediaContainer.appendChild(formatLabelElement);
 
             const dateLabelElement = document.createElement('div');
             dateLabelElement.classList.add('date-label');
             dateLabelElement.textContent = date;
-            mediaContainer.appendChild(dateLabelElement);
+
+            const mediaWrapper = document.createElement('div');
+            mediaWrapper.style.position = 'relative';
+            mediaWrapper.appendChild(mediaElement);
+            mediaWrapper.appendChild(formatLabelElement);
+            mediaWrapper.appendChild(dateLabelElement);
+
+            mediaContainer.appendChild(mediaWrapper);
+            gallery.appendChild(mediaContainer);
 
             mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
-            mediaContainer.appendChild(mediaElement);
-            gallery.appendChild(mediaContainer);
         }
 
         function enlargeMedia(mediaElement, formatLabel) {
