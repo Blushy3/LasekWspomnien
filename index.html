@@ -123,9 +123,10 @@
         const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
           method: 'PUT',
           headers: {
-            Authorization: 'Bearer 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',
-            'Content-Type': 'application/json',
             'Accept': 'application/vnd.github.v3+json',
+            'Authorization': 'Bearer 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',
+            'X-GitHub-Api-Version': 2022-11-28,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             message: 'Add new image URL',
