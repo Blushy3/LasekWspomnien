@@ -78,6 +78,26 @@
             transform: scale(1.1);
         }
 
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .search-input {
+            background-color: rgba(255, 255, 255, 0.5); /* Lekko przezroczysty szary kolor */
+            color: #000000;
+            padding-left: 40px; /* Odstęp na ikonę lupy */
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #ffffff;
+        }
+
         #gallery {
             margin-top: 20px;
             display: flex;
@@ -185,7 +205,10 @@
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-        <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
+        <div class="search-container">
+            <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
+            <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
+        </div>
 
         <div id="gallery"></div>
 
