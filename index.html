@@ -71,13 +71,12 @@
             display: inline-block;
             margin: 10px;
             border-radius: 10px;
-            overflow: hidden;
             position: relative;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .gallery-item img, .gallery-item video {
-            width: 100%;
+            width: 200px;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -152,11 +151,6 @@
             0% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0); }
-        }
-
-        @keyframes zoomIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -245,21 +239,16 @@
             const formatLabelElement = document.createElement('div');
             formatLabelElement.classList.add('format-label');
             formatLabelElement.textContent = formatLabel;
+            mediaContainer.appendChild(formatLabelElement);
 
             const dateLabelElement = document.createElement('div');
             dateLabelElement.classList.add('date-label');
             dateLabelElement.textContent = date;
-
-            const mediaWrapper = document.createElement('div');
-            mediaWrapper.style.position = 'relative';
-            mediaWrapper.appendChild(mediaElement);
-            mediaWrapper.appendChild(formatLabelElement);
-            mediaWrapper.appendChild(dateLabelElement);
-
-            mediaContainer.appendChild(mediaWrapper);
-            gallery.appendChild(mediaContainer);
+            mediaContainer.appendChild(dateLabelElement);
 
             mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
+            mediaContainer.appendChild(mediaElement);
+            gallery.appendChild(mediaContainer);
         }
 
         function enlargeMedia(mediaElement, formatLabel) {
