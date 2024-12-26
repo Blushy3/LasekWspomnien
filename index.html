@@ -73,7 +73,7 @@
             z-index: 1;
         }
 
-        .button:hover, .search-input:hover {
+        .button:hover {
             background-color: #45a049;
             transform: scale(1.1);
         }
@@ -81,12 +81,18 @@
         .search-container {
             position: relative;
             display: inline-block;
+            width: 300px; /* Zwiększona szerokość */
         }
 
         .search-input {
+            width: 100%;
             background-color: rgba(255, 255, 255, 0.5); /* Lekko przezroczysty szary kolor */
             color: #000000;
             padding-left: 40px; /* Odstęp na ikonę lupy */
+        }
+
+        .search-input:hover {
+            background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
         }
 
         .search-icon {
@@ -95,7 +101,8 @@
             left: 10px;
             transform: translateY(-50%);
             font-size: 20px;
-            color: #ffffff;
+            color: #000000; /* Zmieniono kolor na czarny */
+            pointer-events: none; /* Lupa nie będzie blokować kliknięć */
         }
 
         #gallery {
