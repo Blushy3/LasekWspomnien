@@ -11,7 +11,7 @@
         body {
             font-family: 'Raleway', sans-serif;
             text-align: center;
-            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
+            background: url('https://imgur.com/nO0LJK1.png') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
             display: none; /* Ukryj ciało na czas ładowania */
@@ -30,32 +30,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://imgur.com/your-loading-image.png') no-repeat center center fixed;
+            background: url('https://imgur.com/A7isXT6.png') no-repeat center center fixed; /* Wklej tutaj URL swojego obrazka */
             background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             text-align: center;
-            color: #ffffff;
-            font-size: 2em;
             animation: fadeOut 1s forwards;
             animation-delay: 3s; /* Opóźnienie przed zniknięciem */
         }
 
         .loading-animation {
-            position: relative;
-            animation: typing 2s steps(10, end), blink-caret .75s step-end infinite;
+            font-size: 2em;
+            color: #ffffff;
+            border-right: .15em solid orange; /* Caret */
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 2s steps(10, end) forwards, blink-caret .75s step-end infinite;
         }
 
         @keyframes typing {
             from { width: 0 }
-            to { width: 100% }
+            to { width: 10em }
         }
 
         @keyframes blink-caret {
             from, to { border-color: transparent }
-            50% { border-color: white }
+            50% { border-color: orange }
         }
 
         @keyframes fadeOut {
