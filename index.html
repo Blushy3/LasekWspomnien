@@ -44,6 +44,11 @@
             transition: background-color 0.3s, transform 0.3s;
             position: relative;
             z-index: 1;
+            background-image: url('https://imgur.com/QhK9uZK.png'); /* Lis */
+            background-size: cover;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
         }
 
         .button:hover {
@@ -65,6 +70,7 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
@@ -78,6 +84,18 @@
         .gallery-item:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .format-label {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
         }
 
         .description {
@@ -99,6 +117,12 @@
             color: #cccccc;
             position: relative;
             z-index: 1;
+            max-width: 80%;
+            text-align: left;
+        }
+
+        .small-print p {
+            margin: 5px 0;
         }
 
         @keyframes fadeIn {
@@ -126,8 +150,8 @@
 <body>
     <h1>Lasek Wspomnień</h1>
     <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-    <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-    <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+    <button class="button" id="upload" onclick="document.getElementById('file').click()"></button>
+    <button class="button" id="showGallery" onclick="showGallery()"></button>
     <div id="gallery"></div>
 
     <div class="description">
@@ -136,10 +160,22 @@
 
     <div class="small-print">
         <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
-        <p>Przycisk "Galeria wspomnień" służy do odświeżania obrazów, które znajdują się na stronie. Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali. Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
+        <p>Przycisk "Galeria wspomnień" służy do odświeżania obrazów, które znajdują się na stronie.</p>
+        <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
+        <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
     </div>
 
     <script>
+        let isOverlayActive = false;
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isOverlayActive) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                document.body.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        });
+
         async function uploadFile() {
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
@@ -170,21 +206,36 @@
             mediaContainer.classList.add('gallery-item');
 
             let mediaElement;
+            let formatLabel;
             if (url.endsWith('.mp4')) {
                 mediaElement = document.createElement('video');
                 mediaElement.src = url;
                 mediaElement.controls = false; // Disable controls initially
+                mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
+                formatLabel = 'MP4';
+            } else if (url.endsWith('.gif')) {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+                formatLabel = 'GIF';
             } else {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
+                formatLabel = 'IMG';
             }
 
-            mediaElement.onclick = () => enlargeMedia(mediaElement);
+            const formatLabelElement = document.createElement('div');
+            formatLabelElement.classList.add('format-label');
+            formatLabelElement.textContent = formatLabel;
+            mediaContainer.appendChild(formatLabelElement);
+
+            mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
             mediaContainer.appendChild(mediaElement);
             gallery.appendChild(mediaContainer);
         }
 
-        function enlargeMedia(mediaElement) {
+        function enlargeMedia(mediaElement, formatLabel) {
+            isOverlayActive = true;
+
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
             overlay.style.top = '0';
@@ -196,7 +247,10 @@
             overlay.style.justifyContent = 'center';
             overlay.style.alignItems = 'center';
             overlay.style.zIndex = '1000';
-            overlay.onclick = () => document.body.removeChild(overlay);
+            overlay.onclick = () => {
+                document.body.removeChild(overlay);
+                isOverlayActive = false;
+            };
 
             const clonedElement = mediaElement.cloneNode(true);
             clonedElement.style.maxWidth = '90%';
