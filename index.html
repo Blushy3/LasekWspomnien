@@ -59,13 +59,7 @@
     }
   </style>
 </head>
-<body>
-  <h1>Lasek Wspomnień</h1>
-  <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-  <button id="upload" onclick="uploadFile()">Prześlij wspomnienie</button>
-  <button id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-  <div id="gallery"></div>
-  <script>
+    <script>
     async function uploadFile() {
       const file = document.getElementById('file').files[0];
       const formData = new FormData();
@@ -184,5 +178,11 @@
       showGallery();
     }
   </script>
+<body>
+  <h1>Lasek Wspomnień</h1>
+  <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
+  <button id="upload" onclick="uploadFile()">Prześlij wspomnienie</button>
+  <button id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+  <div id="gallery"></div>
 </body>
 </html>
