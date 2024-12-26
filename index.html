@@ -59,7 +59,7 @@
             z-index: 1;
         }
 
-        .button, .search-input {
+        .button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -76,36 +76,6 @@
         .button:hover {
             background-color: #45a049;
             transform: scale(1.1);
-        }
-
-        .search-container {
-            position: relative;
-            display: inline-block;
-            width: 250px; /* Zmniejszona szerokość */
-            margin-top: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.5); /* Lekko przezroczysty szary kolor */
-            color: #333333; /* Ciemniejsza czcionka dla przejrzystości */
-            padding-left: 40px; /* Odstęp na ikonę lupy */
-            border-radius: 10px;
-            border: none;
-            height: 40px;
-        }
-
-        .search-input:hover {
-            background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
-        }
-
-        .search-icon {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: #333333; /* Ciemniejsza czcionka dla przejrzystości */
         }
 
         #gallery {
@@ -215,11 +185,7 @@
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-        <div class="search-container">
-            <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
-            <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
-        </div>
-
+        
         <div id="gallery"></div>
 
         <div class="description">
@@ -411,23 +377,6 @@
             } catch (error) {
                 console.error('Error showing gallery:', error);
             }
-        }
-
-        function filterGallery() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
-                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
-                const dateLabel = item.querySelector('.date-label').textContent;
-                const mediaElement = item.querySelector('img, video');
-                const mediaUrl = mediaElement.src.toLowerCase();
-
-                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
-                    item.style.display = 'inline-block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
         }
 
         window.onload = function() {
