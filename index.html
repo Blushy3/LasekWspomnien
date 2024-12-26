@@ -11,7 +11,8 @@
         body {
             font-family: 'Raleway', sans-serif;
             text-align: center;
-            background: #000000;
+            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
+            background-size: cover;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -20,22 +21,11 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
-        }
-
-        .parallax {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
-            background-size: cover;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            transition: transform 0.1s ease-out;
         }
 
         h1 {
-            animation: fadeIn 3s ease-out;
+            animation: fadeIn 3s ease-out, float 6s ease-in-out infinite;
             font-family: 'Raleway', sans-serif;
             margin-top: 50px;
             font-size: 3em;
@@ -122,6 +112,12 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
         @keyframes zoomIn {
             0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
@@ -129,7 +125,6 @@
     </style>
 </head>
 <body>
-    <div class="parallax"></div>
     <h1>Lasek Wspomnień</h1>
     <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
     <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
@@ -147,10 +142,9 @@
 
     <script>
         document.addEventListener('mousemove', (e) => {
-            const parallax = document.querySelector('.parallax');
-            const x = (e.clientX / window.innerWidth * 100 - 50) * 0.5;
-            const y = (e.clientY / window.innerHeight * 100 - 50) * 0.5;
-            parallax.style.transform = `translate(${x}%, ${y}%)`;
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            document.body.style.transform = `translate(${x}px, ${y}px)`;
         });
 
         async function uploadFile() {
