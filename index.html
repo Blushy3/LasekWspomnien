@@ -20,7 +20,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* To może blokować przewijanie */
+            overflow: hidden;
         }
 
         /* Dodajemy media queries, aby umożliwić przewijanie na urządzeniach mobilnych */
@@ -98,6 +98,36 @@
             border-radius: 5px;
             font-size: 12px;
             pointer-events: none;
+        }
+
+        .rating-buttons {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .rating-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .rating-button.green {
+            background-color: #4CAF50;
+        }
+
+        .rating-button.red {
+            background-color: #f44336;
+        }
+
+        .rating-count {
+            margin-left: 5px;
         }
 
         .description {
@@ -233,9 +263,51 @@
             formatLabelElement.textContent = formatLabel;
             mediaContainer.appendChild(formatLabelElement);
 
+            // Dodanie przycisków oceniania
+            const ratingButtons = document.createElement('div');
+            ratingButtons.classList.add('rating-buttons');
+
+            const plusButton = document.createElement('button');
+            plusButton.classList.add('rating-button', 'green');
+            plusButton.innerHTML = '+';
+            plusButton.onclick = () => rateMedia(url, 1);
+
+            const minusButton = document.createElement('button');
+            minusButton.classList.add('rating-button', 'red');
+            minusButton.innerHTML = '-';
+            minusButton.onclick = () => rateMedia(url, -1);
+
+            const ratingCount = document.createElement('span');
+            ratingCount.classList.add('rating-count');
+            ratingCount.id = `rating-${url}`;
+            updateRatingDisplay(url, ratingCount);
+
+            ratingButtons.appendChild(plusButton);
+            ratingButtons.appendChild(minusButton);
+            ratingButtons.appendChild(ratingCount);
+
+            mediaContainer.appendChild(ratingButtons);
+
             mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
             mediaContainer.appendChild(mediaElement);
             gallery.appendChild(mediaContainer);
+        }
+
+        function rateMedia(url, value) {
+            const ratings = JSON.parse(localStorage.getItem('ratings') || '{}');
+            if (!ratings[url]) {
+                ratings[url] = 0;
+            }
+            ratings[url] += value;
+            localStorage.setItem('ratings', JSON.stringify(ratings));
+            const ratingCount = document.getElementById(`rating-${url}`);
+            updateRatingDisplay(url, ratingCount);
+        }
+
+        function updateRatingDisplay(url, element) {
+            const ratings = JSON.parse(localStorage.getItem('ratings') || '{}');
+            const rating = ratings[url] || 0;
+            element.textContent = rating;
         }
 
         function enlargeMedia(mediaElement, formatLabel) {
