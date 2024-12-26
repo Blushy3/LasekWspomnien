@@ -38,6 +38,8 @@
             text-align: center;
             color: #ffffff;
             font-size: 2em;
+            animation: fadeOut 1s forwards;
+            animation-delay: 2s; /* Opóźnienie przed zniknięciem */
         }
 
         .loading-animation {
@@ -47,6 +49,10 @@
         @keyframes fadeInOut {
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            100% { opacity: 0; visibility: hidden; }
         }
 
         h1 {
@@ -356,8 +362,10 @@
 
         window.onload = function() {
             // Po załadowaniu strony, ukryj ekran ładowania i pokaż zawartość
-            document.getElementById('loading-screen').style.display = 'none';
-            document.body.style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.body.style.display = 'flex';
+            }, 2000); // Czas wyświetlania ekranu ładowania
             showGallery();
         }
     </script>
