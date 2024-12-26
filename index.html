@@ -101,57 +101,65 @@
     }
 
     async function saveImageUrl(url) {
-      const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer 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',
-          'Accept': 'application/vnd.github.v3+json',
-        }
-      });
+      try {
+        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer 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',
+            'Accept': 'application/vnd.github.v3+json',
+          }
+        });
 
-      const data = await response.json();
-      const images = JSON.parse(atob(data.content));
-      images.push(url);
-      const updatedContent = btoa(JSON.stringify(images, null, 2));
+        const data = await response.json();
+        const images = JSON.parse(atob(data.content));
+        images.push(url);
+        const updatedContent = btoa(JSON.stringify(images, null, 2));
 
-      await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-        method: 'PUT',
-        headers: {
-          Authorization: 'Bearer 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',
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json',
-        },
-        body: JSON.stringify({
-          message: 'Add new image URL',
-          content: updatedContent,
-          sha: data.sha,
-        })
-      });
+        await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+          method: 'PUT',
+          headers: {
+            Authorization: 'Bearer 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',
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json',
+          },
+          body: JSON.stringify({
+            message: 'Add new image URL',
+            content: updatedContent,
+            sha: data.sha,
+          })
+        });
+      } catch (error) {
+        console.error('Error saving image URL:', error);
+      }
     }
 
     async function showGallery() {
-      const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const images = JSON.parse(atob(data.content));
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-        images.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url;
-          img.classList.add('gallery-item');
-          img.style.width = "200px"; // Możesz dostosować rozmiar
-          img.style.height = "auto"; // Możesz dostosować rozmiar
-          gallery.appendChild(img);
+      try {
+        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+          }
         });
-      } else {
-        console.error('Error fetching gallery images');
+
+        if (response.ok) {
+          const data = await response.json();
+          const images = JSON.parse(atob(data.content));
+          const gallery = document.getElementById('gallery');
+          gallery.innerHTML = '';
+          images.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.classList.add('gallery-item');
+            img.style.width = "200px"; // Możesz dostosować rozmiar
+            img.style.height = "auto"; // Możesz dostosować rozmiar
+            gallery.appendChild(img);
+          });
+        } else {
+          console.error('Error fetching gallery images');
+        }
+      } catch (error) {
+        console.error('Error showing gallery:', error);
       }
     }
 
