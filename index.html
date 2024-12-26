@@ -153,6 +153,16 @@
     </div>
 
     <script>
+        let isOverlayActive = false;
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isOverlayActive) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                document.body.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        });
+
         async function uploadFile() {
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
@@ -181,13 +191,14 @@
             const gallery = document.getElementById('gallery');
             const mediaContainer = document.createElement('div');
             mediaContainer.classList.add('gallery-item');
-          
+
             let mediaElement;
             let formatLabel;
             if (url.endsWith('.mp4')) {
                 mediaElement = document.createElement('video');
                 mediaElement.src = url;
                 mediaElement.controls = false; // Disable controls initially
+                mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
                 formatLabel = 'MP4';
             } else if (url.endsWith('.gif')) {
                 mediaElement = document.createElement('img');
@@ -210,6 +221,8 @@
         }
 
         function enlargeMedia(mediaElement, formatLabel) {
+            isOverlayActive = true;
+
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
             overlay.style.top = '0';
@@ -221,7 +234,10 @@
             overlay.style.justifyContent = 'center';
             overlay.style.alignItems = 'center';
             overlay.style.zIndex = '1000';
-            overlay.onclick = () => document.body.removeChild(overlay);
+            overlay.onclick = () => {
+                document.body.removeChild(overlay);
+                isOverlayActive = false;
+            };
 
             const clonedElement = mediaElement.cloneNode(true);
             clonedElement.style.maxWidth = '90%';
