@@ -20,7 +20,14 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* To może blokować przewijanie */
+        }
+
+        /* Dodajemy media queries, aby umożliwić przewijanie na urządzeniach mobilnych */
+        @media (max-width: 767px) {
+            body {
+                overflow: auto;
+            }
         }
 
         h1 {
