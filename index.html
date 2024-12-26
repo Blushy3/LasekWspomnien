@@ -71,20 +71,23 @@
             display: inline-block;
             margin: 10px;
             border-radius: 10px;
+            overflow: hidden;
             position: relative;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .gallery-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        }
-
         .gallery-item img, .gallery-item video {
-            width: 200px;
+            width: 100%;
             height: auto;
             border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery-item:hover img, .gallery-item:hover video {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
         .format-label, .date-label {
@@ -326,7 +329,7 @@
                 });
 
                 if (!updateResponse.ok) {
-                    console.error('Failed to update images.json:', updateResponse.status, updateResponse.statusText);
+                    console.error('Failed to update images.json:', updateResponse.status, response.statusText);
                 }
             } catch (error) {
                 console.error('Error saving image URL:', error);
