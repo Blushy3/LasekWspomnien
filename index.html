@@ -105,13 +105,13 @@
         const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
           method: 'GET',
           headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
             'Accept': 'application/vnd.github.v3+json',
           }
         });
 
         if (!response.ok) {
-          console.error('Failed to fetch images.json:', response.statusText);
+          console.error('Failed to fetch images.json:', response.status, response.statusText);
           return;
         }
 
@@ -126,10 +126,10 @@
         const updatedContent = btoa(JSON.stringify(images, null, 2));
         console.log('Updated content:', updatedContent);  // Logowanie zaktualizowanej zawartości
 
-        await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+        const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
           method: 'PUT',
           headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.github.v3+json',
           },
@@ -139,6 +139,10 @@
             sha: data.sha,
           })
         });
+
+        if (!updateResponse.ok) {
+          console.error('Failed to update images.json:', updateResponse.status, updateResponse.statusText);
+        }
       } catch (error) {
         console.error('Error saving image URL:', error);
       }
@@ -168,7 +172,7 @@
             gallery.appendChild(img);
           });
         } else {
-          console.error('Error fetching gallery images:', response.statusText);
+          console.error('Error fetching gallery images:', response.status, response.statusText);
         }
       } catch (error) {
         console.error('Error showing gallery:', error);
