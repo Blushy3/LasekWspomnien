@@ -44,11 +44,6 @@
             transition: background-color 0.3s, transform 0.3s;
             position: relative;
             z-index: 1;
-            background-image: url('https://imgur.com/QhK9uZK.png'); /* Lis */
-            background-size: cover;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
         }
 
         .button:hover {
@@ -150,8 +145,8 @@
 <body>
     <h1>Lasek Wspomnień</h1>
     <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-    <button class="button" id="upload" onclick="document.getElementById('file').click()"></button>
-    <button class="button" id="showGallery" onclick="showGallery()"></button>
+    <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+    <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
     <div id="gallery"></div>
 
     <div class="description">
