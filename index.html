@@ -6,8 +6,10 @@
     <title>Lasek Wspomnień</title>
     <style>
         /* Stylizacja strony */
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Raleway', sans-serif;
             text-align: center;
             background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
             background-size: cover;
@@ -17,22 +19,17 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
 
         h1 {
-            animation: fadeIn 3s, bounce 2s infinite alternate;
-            font-family: 'Cursive', sans-serif;
+            animation: fadeIn 3s ease-out;
+            font-family: 'Raleway', sans-serif;
             margin-top: 50px;
             font-size: 3em;
         }
 
-        p {
-            font-size: 1.2em;
-            margin: 20px;
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        #upload, #showGallery {
+        .button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -44,7 +41,7 @@
             transition: background-color 0.3s, transform 0.3s;
         }
 
-        #upload:hover, #showGallery:hover {
+        .button:hover {
             background-color: #45a049;
             transform: scale(1.1);
         }
@@ -64,6 +61,13 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
+        .gallery-item img {
+            width: 200px;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
         .gallery-item:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
@@ -71,9 +75,13 @@
 
         .description {
             margin-top: 50px;
-            font-size: 1.5em;
+            font-size: 1.2em;
             text-align: center;
             animation: fadeInUp 2s ease-in-out;
+        }
+
+        .description p {
+            font-size: 1em;
         }
 
         @keyframes fadeIn {
@@ -85,19 +93,13 @@
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
-        }
     </style>
 </head>
 <body>
     <h1>Lasek Wspomnień</h1>
-    <p>Witaj w Lasku Wspomnień!</p>
     <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-    <button id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-    <button id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+    <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+    <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
     <div id="gallery"></div>
 
     <div class="description">
@@ -131,12 +133,40 @@
 
         function addImageToGallery(url) {
             const gallery = document.getElementById('gallery');
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('gallery-item');
             const img = document.createElement('img');
             img.src = url;
-            img.classList.add('gallery-item');
-            img.style.width = "200px"; // Możesz dostosować rozmiar
-            img.style.height = "auto"; // Możesz dostosować rozmiar
-            gallery.appendChild(img);
+            img.onclick = () => enlargeImage(img.src);
+            imgContainer.appendChild(img);
+            gallery.appendChild(imgContainer);
+        }
+
+        function enlargeImage(url) {
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '1000';
+            overlay.onclick = () => document.body.removeChild(overlay);
+
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.maxWidth = '90%';
+            img.style.maxHeight = '90%';
+            img.style.borderRadius = '10px';
+            img.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            img.style.transition = 'transform 0.3s';
+            img.onclick = (event) => event.stopPropagation();
+
+            overlay.appendChild(img);
+            document.body.appendChild(overlay);
         }
 
         async function saveImageUrl(url) {
@@ -188,12 +218,13 @@
                     const gallery = document.getElementById('gallery');
                     gallery.innerHTML = '';
                     images.forEach(url => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.classList.add('gallery-item');
                         const img = document.createElement('img');
                         img.src = url;
-                        img.classList.add('gallery-item');
-                        img.style.width = "200px"; // Możesz dostosować rozmiar
-                        img.style.height = "auto"; // Możesz dostosować rozmiar
-                        gallery.appendChild(img);
+                        img.onclick = () => enlargeImage(img.src);
+                        imgContainer.appendChild(img);
+                        gallery.appendChild(imgContainer);
                     });
                 } else {
                     console.error('Error fetching gallery images:', response.status, response.statusText);
