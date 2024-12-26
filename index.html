@@ -59,7 +59,7 @@
             z-index: 1;
         }
 
-        .button {
+        .button, .search-input {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -73,7 +73,7 @@
             z-index: 1;
         }
 
-        .button:hover {
+        .button:hover, .search-input:hover {
             background-color: #45a049;
             transform: scale(1.1);
         }
@@ -185,6 +185,8 @@
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+        <input type="date" class="search-input" id="searchDate" placeholder="Wpisz datę" />
+
         <div id="gallery"></div>
 
         <div class="description">
@@ -377,6 +379,19 @@
                 console.error('Error showing gallery:', error);
             }
         }
+
+        document.getElementById('searchDate').addEventListener('input', function() {
+            const selectedDate = this.value;
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                const dateLabel = item.querySelector('.date-label').textContent;
+                if (dateLabel === selectedDate) {
+                    item.style.display = 'inline-block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
 
         window.onload = function() {
             showGallery();
