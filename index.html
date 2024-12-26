@@ -8,6 +8,13 @@
         /* Stylizacja strony */
         @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
 
+        /* Ukrycie pasków przewijania */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Ukrycie pasków przewijania */
+        }
+
         body {
             font-family: 'Raleway', sans-serif;
             text-align: center;
@@ -20,13 +27,22 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: auto; /* Zmieniono na auto, aby umożliwić przewijanie */
+        }
+
+        main {
+            overflow-y: scroll; /* Umożliwienie przewijania zawartości głównej */
+            -ms-overflow-style: none;  /* Ukrycie pasków przewijania w IE i Edge */
+            scrollbar-width: none;  /* Ukrycie pasków przewijania w Firefox */
+        }
+
+        main::-webkit-scrollbar {
+            display: none;  /* Ukrycie pasków przewijania w Chrome, Safari i Opera */
         }
 
         /* Dodajemy media queries, aby umożliwić przewijanie na urządzeniach mobilnych */
         @media (max-width: 767px) {
-            body {
-                overflow: auto; /* Umożliwienie przewijania na urządzeniach mobilnych */
+            main {
+                overflow-y: auto; /* Umożliwienie przewijania na urządzeniach mobilnych */
             }
         }
 
@@ -160,22 +176,24 @@
     </style>
 </head>
 <body>
-    <h1>Lasek Wspomnień</h1>
-    <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-    <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-    <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-    <div id="gallery"></div>
+    <main>
+        <h1>Lasek Wspomnień</h1>
+        <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
+        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+        <div id="gallery"></div>
 
-    <div class="description">
-        <p>Poznaj Lasek Wspomnień - miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
-    </div>
+        <div class="description">
+            <p>Poznaj Lasek Wspomnień - miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
+        </div>
 
-    <div class="small-print">
-        <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
-        <p>Przycisk "Galeria wspomnień" służy do odświeżania obrazów, które znajdują się na stronie.</p>
-        <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
-        <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
-    </div>
+        <div class="small-print">
+            <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
+            <p>Przycisk "Galeria wspomnień" służy do odświeżania obrazów, które znajdują się na stronie.</p>
+            <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
+            <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
+        </div>
+    </main>
 
     <script>
         let isOverlayActive = false;
