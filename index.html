@@ -20,13 +20,13 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow: auto; /* Zmieniono na auto, aby umożliwić przewijanie */
         }
 
         /* Dodajemy media queries, aby umożliwić przewijanie na urządzeniach mobilnych */
         @media (max-width: 767px) {
             body {
-                overflow: auto;
+                overflow: auto; /* Umożliwienie przewijania na urządzeniach mobilnych */
             }
         }
 
