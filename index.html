@@ -72,42 +72,42 @@
             margin: 10px;
             border-radius: 10px;
             position: relative;
+            overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .gallery-item img, .gallery-item video {
-            width: 200px;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .gallery-item:hover img, .gallery-item:hover video {
+        .gallery-item:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .format-label, .date-label {
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .label-container {
             position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .format-label, .date-label {
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
             padding: 2px 5px;
             border-radius: 5px;
             font-size: 12px;
-            pointer-events: none;
             transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .format-label {
-            top: 5px;
-            right: 10px;
-        }
-
-        .date-label {
-            top: 5px;
-            left: 10px;
         }
 
         .description {
@@ -151,6 +151,11 @@
             0% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -239,16 +244,21 @@
             const formatLabelElement = document.createElement('div');
             formatLabelElement.classList.add('format-label');
             formatLabelElement.textContent = formatLabel;
-            mediaContainer.appendChild(formatLabelElement);
 
             const dateLabelElement = document.createElement('div');
             dateLabelElement.classList.add('date-label');
             dateLabelElement.textContent = date;
-            mediaContainer.appendChild(dateLabelElement);
+
+            const labelContainer = document.createElement('div');
+            labelContainer.classList.add('label-container');
+            labelContainer.appendChild(dateLabelElement);
+            labelContainer.appendChild(formatLabelElement);
+
+            mediaContainer.appendChild(mediaElement);
+            mediaContainer.appendChild(labelContainer);
+            gallery.appendChild(mediaContainer);
 
             mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
-            mediaContainer.appendChild(mediaElement);
-            gallery.appendChild(mediaContainer);
         }
 
         function enlargeMedia(mediaElement, formatLabel) {
