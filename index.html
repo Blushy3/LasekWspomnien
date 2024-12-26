@@ -254,7 +254,7 @@
                 mediaElement.controls = false; // Disable controls initially
                 mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
                 formatLabel = 'MP4';
-            } else if (url endsWith('.gif')) {
+            } else if (url.endsWith('.gif')) {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
                 formatLabel = 'GIF';
