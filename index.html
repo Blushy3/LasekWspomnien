@@ -21,7 +21,6 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: transform 0.1s ease-out;
         }
 
         h1 {
@@ -66,6 +65,7 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
@@ -79,6 +79,18 @@
         .gallery-item:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .format-label {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
         }
 
         .description {
@@ -141,12 +153,6 @@
     </div>
 
     <script>
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            document.body.style.transform = `translate(${x}px, ${y}px)`;
-        });
-
         async function uploadFile() {
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
@@ -175,26 +181,35 @@
             const gallery = document.getElementById('gallery');
             const mediaContainer = document.createElement('div');
             mediaContainer.classList.add('gallery-item');
-
+          
             let mediaElement;
+            let formatLabel;
             if (url.endsWith('.mp4')) {
                 mediaElement = document.createElement('video');
                 mediaElement.src = url;
-                mediaElement.controls = true;
+                mediaElement.controls = false; // Disable controls initially
+                formatLabel = 'MP4';
             } else if (url.endsWith('.gif')) {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
+                formatLabel = 'GIF';
             } else {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
+                formatLabel = 'IMG';
             }
 
-            mediaElement.onclick = () => enlargeMedia(mediaElement);
+            const formatLabelElement = document.createElement('div');
+            formatLabelElement.classList.add('format-label');
+            formatLabelElement.textContent = formatLabel;
+            mediaContainer.appendChild(formatLabelElement);
+
+            mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
             mediaContainer.appendChild(mediaElement);
             gallery.appendChild(mediaContainer);
         }
 
-        function enlargeMedia(mediaElement) {
+        function enlargeMedia(mediaElement, formatLabel) {
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
             overlay.style.top = '0';
@@ -215,6 +230,11 @@
             clonedElement.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
             clonedElement.style.transition = 'transform 0.3s';
             clonedElement.style.animation = 'zoomIn 0.5s ease';
+            
+            if (clonedElement.tagName === 'VIDEO') {
+                clonedElement.controls = true; // Enable controls for enlarged video
+                clonedElement.autoplay = true; // Autoplay video when enlarged
+            }
 
             overlay.appendChild(clonedElement);
             document.body.appendChild(overlay);
