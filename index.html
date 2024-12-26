@@ -59,7 +59,7 @@
             z-index: 1;
         }
 
-        .button, .search-input {
+        .button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -73,7 +73,7 @@
             z-index: 1;
         }
 
-        .button:hover, .search-input:hover {
+        .button:hover {
             background-color: #45a049;
             transform: scale(1.1);
         }
@@ -183,12 +183,9 @@
     <main>
         <h1>Lasek Wspomnień</h1>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-            <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-            <input type="date" class="search-input" id="searchDate" placeholder="Wpisz datę" />
-        </div>
-
+        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+        
         <div id="gallery"></div>
 
         <div class="description">
@@ -257,7 +254,7 @@
                 mediaElement.controls = false; // Disable controls initially
                 mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
                 formatLabel = 'MP4';
-            } else if (url.endsWith('.gif')) {
+            } else if (url endsWith('.gif')) {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
                 formatLabel = 'GIF';
@@ -381,19 +378,6 @@
                 console.error('Error showing gallery:', error);
             }
         }
-
-        document.getElementById('searchDate').addEventListener('input', function() {
-            const selectedDate = this.value;
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
-                const dateLabel = item.querySelector('.date-label').textContent;
-                if (dateLabel === selectedDate) {
-                    item.style.display = 'inline-block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
 
         window.onload = function() {
             showGallery();
