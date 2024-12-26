@@ -69,7 +69,7 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .gallery-item img {
+        .gallery-item img, .gallery-item video {
             width: 200px;
             height: auto;
             border-radius: 10px;
@@ -164,25 +164,37 @@
                 if (!response.ok) throw new Error('Upload failed');
                 const result = await response.json();
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + result.data.link);
-                addImageToGallery(result.data.link);
+                addMediaToGallery(result.data.link);
                 await saveImageUrl(result.data.link);
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
-        function addImageToGallery(url) {
+        function addMediaToGallery(url) {
             const gallery = document.getElementById('gallery');
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('gallery-item');
-            const img = document.createElement('img');
-            img.src = url;
-            img.onclick = () => enlargeImage(img.src);
-            imgContainer.appendChild(img);
-            gallery.appendChild(imgContainer);
+            const mediaContainer = document.createElement('div');
+            mediaContainer.classList.add('gallery-item');
+
+            let mediaElement;
+            if (url.endsWith('.mp4')) {
+                mediaElement = document.createElement('video');
+                mediaElement.src = url;
+                mediaElement.controls = true;
+            } else if (url.endsWith('.gif')) {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+            } else {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+            }
+
+            mediaElement.onclick = () => enlargeMedia(mediaElement);
+            mediaContainer.appendChild(mediaElement);
+            gallery.appendChild(mediaContainer);
         }
 
-        function enlargeImage(url) {
+        function enlargeMedia(mediaElement) {
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
             overlay.style.top = '0';
@@ -196,17 +208,15 @@
             overlay.style.zIndex = '1000';
             overlay.onclick = () => document.body.removeChild(overlay);
 
-            const img = document.createElement('img');
-            img.src = url;
-            img.style.maxWidth = '90%';
-            img.style.maxHeight = '90%';
-            img.style.borderRadius = '10px';
-            img.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-            img.style.transition = 'transform 0.3s';
-            img.onclick = (event) => event.stopPropagation();
-            img.style.animation = 'zoomIn 0.5s ease';
+            const clonedElement = mediaElement.cloneNode(true);
+            clonedElement.style.maxWidth = '90%';
+            clonedElement.style.maxHeight = '90%';
+            clonedElement.style.borderRadius = '10px';
+            clonedElement.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            clonedElement.style.transition = 'transform 0.3s';
+            clonedElement.style.animation = 'zoomIn 0.5s ease';
 
-            overlay.appendChild(img);
+            overlay.appendChild(clonedElement);
             document.body.appendChild(overlay);
         }
 
@@ -259,13 +269,7 @@
                     const gallery = document.getElementById('gallery');
                     gallery.innerHTML = '';
                     images.forEach(url => {
-                        const imgContainer = document.createElement('div');
-                        imgContainer.classList.add('gallery-item');
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.onclick = () => enlargeImage(img.src);
-                        imgContainer.appendChild(img);
-                        gallery.appendChild(imgContainer);
+                        addMediaToGallery(url);
                     });
                 } else {
                     console.error('Error fetching gallery images:', response.status, response.statusText);
