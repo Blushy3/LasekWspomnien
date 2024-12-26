@@ -112,18 +112,18 @@
             background-color: rgba(0, 0, 0, 0.5);
             border: none;
             color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 5px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 18px;
             transition: background-color 0.3s, transform 0.3s;
         }
 
-        .rating-button.green {
-            background-color: #4CAF50;
+        .rating-button.heart {
+            background-color: #ff4081;
         }
 
-        .rating-button.red {
+        .rating-button.thumb-down {
             background-color: #f44336;
         }
 
@@ -276,23 +276,23 @@
             const ratingButtons = document.createElement('div');
             ratingButtons.classList.add('rating-buttons');
 
-            const plusButton = document.createElement('button');
-            plusButton.classList.add('rating-button', 'green');
-            plusButton.innerHTML = '+';
-            plusButton.onclick = () => rateMedia(url, 1);
+            const heartButton = document.createElement('button');
+            heartButton.classList.add('rating-button', 'heart');
+            heartButton.innerHTML = '❤️';
+            heartButton.onclick = () => rateMedia(url, 1);
 
-            const minusButton = document.createElement('button');
-            minusButton.classList.add('rating-button', 'red');
-            minusButton.innerHTML = '-';
-            minusButton.onclick = () => rateMedia(url, -1);
+            const thumbDownButton = document.createElement('button');
+            thumbDownButton.classList.add('rating-button', 'thumb-down');
+            thumbDownButton.innerHTML = '👎';
+            thumbDownButton.onclick = () => rateMedia(url, -1);
 
             const ratingCount = document.createElement('span');
             ratingCount.classList.add('rating-count');
             ratingCount.id = `rating-${url}`;
             updateRatingDisplay(url, ratingCount);
 
-            ratingButtons.appendChild(plusButton);
-            ratingButtons.appendChild(minusButton);
+            ratingButtons.appendChild(heartButton);
+            ratingButtons.appendChild(thumbDownButton);
             ratingButtons.appendChild(ratingCount);
 
             mediaContainer.appendChild(ratingButtons);
