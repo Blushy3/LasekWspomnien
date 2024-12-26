@@ -149,13 +149,7 @@
 
     async function showGallery() {
       try {
-        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer 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',
-            'Accept': 'application/vnd.github.v3+json',
-          }
-        });
+        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
 
         if (response.ok) {
           const data = await response.json();
