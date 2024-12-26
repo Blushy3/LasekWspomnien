@@ -30,7 +30,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000000;
+            background: url('https://imgur.com/your-loading-image.png') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,16 +40,22 @@
             color: #ffffff;
             font-size: 2em;
             animation: fadeOut 1s forwards;
-            animation-delay: 2s; /* Opóźnienie przed zniknięciem */
+            animation-delay: 3s; /* Opóźnienie przed zniknięciem */
         }
 
         .loading-animation {
-            animation: fadeInOut 1.5s infinite;
+            position: relative;
+            animation: typing 2s steps(10, end), blink-caret .75s step-end infinite;
         }
 
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: white }
         }
 
         @keyframes fadeOut {
@@ -365,7 +372,7 @@
             setTimeout(() => {
                 document.getElementById('loading-screen').style.display = 'none';
                 document.body.style.display = 'flex';
-            }, 2000); // Czas wyświetlania ekranu ładowania
+            }, 3000); // Czas wyświetlania ekranu ładowania
             showGallery();
         }
     </script>
