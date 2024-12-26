@@ -414,6 +414,23 @@
             }
         }
 
+        function filterGallery() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
+                const dateLabel = item.querySelector('.date-label').textContent;
+                const mediaElement = item.querySelector('img, video');
+                const mediaUrl = mediaElement.src.toLowerCase();
+
+                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
+                    item.style.display = 'inline-block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
         window.onload = function() {
             showGallery();
         }
