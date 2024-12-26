@@ -83,50 +83,80 @@
         if (!response.ok) throw new Error('Upload failed');
         const result = await response.json();
         alert('File uploaded successfully! Image URL: ' + result.data.link);
-        addImageToGallery(result.data.link, file.name);
+        addImageToGallery(result.data.link);
+        await saveImageUrl(result.data.link);
       } catch (error) {
         console.error('Error:', error);
       }
     }
 
-    function addImageToGallery(url, name) {
+    function addImageToGallery(url) {
       const gallery = document.getElementById('gallery');
       const img = document.createElement('img');
       img.src = url;
-      img.alt = name;
       img.classList.add('gallery-item');
       img.style.width = "200px"; // Możesz dostosować rozmiar
       img.style.height = "auto"; // Możesz dostosować rozmiar
       gallery.appendChild(img);
     }
 
-    async function showGallery() {
-      try {
-        const response = await fetch('https://api.imgur.com/3/account/me/images', {
-          headers: {
-            Authorization: '034b338ff105b12',
-          }
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          const gallery = document.getElementById('gallery');
-          gallery.innerHTML = '';
-          result.data.forEach(image => {
-            const img = document.createElement('img');
-            img.src = image.link;
-            img.alt = image.title;
-            img.classList.add('gallery-item');
-            img.style.width = "200px"; // Możesz dostosować rozmiar
-            img.style.height = "auto"; // Możesz dostosować rozmiar
-            gallery.appendChild(img);
-          });
-        } else {
-          throw new Error('Could not fetch images');
+    async function saveImageUrl(url) {
+      const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer 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',
+          'Accept': 'application/vnd.github.v3+json',
         }
-      } catch (error) {
-        console.error('Error:', error);
+      });
+
+      const data = await response.json();
+      const images = JSON.parse(atob(data.content));
+      images.push(url);
+      const updatedContent = btoa(JSON.stringify(images, null, 2));
+
+      await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer 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',
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json',
+        },
+        body: JSON.stringify({
+          message: 'Add new image URL',
+          content: updatedContent,
+          sha: data.sha,
+        })
+      });
+    }
+
+    async function showGallery() {
+      const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const images = JSON.parse(atob(data.content));
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+        images.forEach(url => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.classList.add('gallery-item');
+          img.style.width = "200px"; // Możesz dostosować rozmiar
+          img.style.height = "auto"; // Możesz dostosować rozmiar
+          gallery.appendChild(img);
+        });
+      } else {
+        console.error('Error fetching gallery images');
       }
+    }
+
+    window.onload = function() {
+      showGallery();
     }
   </script>
 </body>
