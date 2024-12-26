@@ -78,6 +78,37 @@
             transform: scale(1.1);
         }
 
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 250px; /* Zmniejszona szerokość */
+            margin-top: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.5); /* Lekko przezroczysty szary kolor */
+            color: #333333; /* Ciemniejsza czcionka dla przejrzystości */
+            padding-left: 40px; /* Odstęp na ikonę lupy */
+            border-radius: 10px;
+            border: none;
+            height: 40px;
+            font-size: 16px;
+        }
+
+        .search-input:hover {
+            background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            font-size: 20px;
+            color: #333333; /* Ciemniejsza czcionka dla przejrzystości */
+            pointer-events: none; /* Lupa nie będzie blokować kliknięć */
+        }
+
         #gallery {
             margin-top: 20px;
             display: flex;
@@ -185,7 +216,11 @@
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-        
+        <div class="search-container">
+            <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
+            <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
+        </div>
+
         <div id="gallery"></div>
 
         <div class="description">
