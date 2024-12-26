@@ -105,20 +105,31 @@
         const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
           method: 'GET',
           headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
             'Accept': 'application/vnd.github.v3+json',
           }
         });
 
+        if (!response.ok) {
+          console.error('Failed to fetch images.json:', response.statusText);
+          return;
+        }
+
         const data = await response.json();
-        const images = JSON.parse(atob(data.content));
+        console.log('Original data:', data);  // Logowanie oryginalnych danych
+        const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
+        console.log('Decoded content:', content);  // Logowanie dekodowanej zawartości
+        const images = JSON.parse(content);
+        console.log('Parsed images:', images);  // Logowanie tablicy obrazów
+
         images.push(url);
         const updatedContent = btoa(JSON.stringify(images, null, 2));
+        console.log('Updated content:', updatedContent);  // Logowanie zaktualizowanej zawartości
 
         await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
           method: 'PUT',
           headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.github.v3+json',
           },
@@ -144,7 +155,8 @@
 
         if (response.ok) {
           const data = await response.json();
-          const images = JSON.parse(atob(data.content));
+          const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
+          const images = JSON.parse(content);
           const gallery = document.getElementById('gallery');
           gallery.innerHTML = '';
           images.forEach(url => {
@@ -156,7 +168,7 @@
             gallery.appendChild(img);
           });
         } else {
-          console.error('Error fetching gallery images');
+          console.error('Error fetching gallery images:', response.statusText);
         }
       } catch (error) {
         console.error('Error showing gallery:', error);
