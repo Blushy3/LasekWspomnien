@@ -11,8 +11,7 @@
         body {
             font-family: 'Raleway', sans-serif;
             text-align: center;
-            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
-            background-size: cover;
+            background: #000000;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -20,6 +19,19 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            overflow: hidden;
+        }
+
+        .parallax {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
+            background-size: cover;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
         }
 
         h1 {
@@ -27,6 +39,8 @@
             font-family: 'Raleway', sans-serif;
             margin-top: 50px;
             font-size: 3em;
+            position: relative;
+            z-index: 1;
         }
 
         .button {
@@ -39,6 +53,8 @@
             color: #ffffff;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
+            position: relative;
+            z-index: 1;
         }
 
         .button:hover {
@@ -51,6 +67,8 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
         .gallery-item {
@@ -78,10 +96,20 @@
             font-size: 1.2em;
             text-align: center;
             animation: fadeInUp 2s ease-in-out;
+            position: relative;
+            z-index: 1;
         }
 
         .description p {
             font-size: 1em;
+        }
+
+        .small-print {
+            font-size: 0.8em;
+            margin-top: 20px;
+            color: #cccccc;
+            position: relative;
+            z-index: 1;
         }
 
         @keyframes fadeIn {
@@ -93,9 +121,15 @@
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes zoomIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <div class="parallax"></div>
     <h1>Lasek Wspomnień</h1>
     <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
     <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
@@ -106,7 +140,19 @@
         <p>Poznaj Lasek Wspomnień - miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
     </div>
 
+    <div class="small-print">
+        <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
+        <p>Przycisk "Galeria wspomnień" służy do odświeżania obrazów, które znajdują się na stronie. Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali. Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
+    </div>
+
     <script>
+        document.addEventListener('mousemove', (e) => {
+            const parallax = document.querySelector('.parallax');
+            const x = (e.clientX / window.innerWidth * 100 - 50) * 0.5;
+            const y = (e.clientY / window.innerHeight * 100 - 50) * 0.5;
+            parallax.style.transform = `translate(${x}%, ${y}%)`;
+        });
+
         async function uploadFile() {
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
@@ -164,6 +210,7 @@
             img.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
             img.style.transition = 'transform 0.3s';
             img.onclick = (event) => event.stopPropagation();
+            img.style.animation = 'zoomIn 0.5s ease';
 
             overlay.appendChild(img);
             document.body.appendChild(overlay);
