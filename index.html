@@ -183,9 +183,11 @@
     <main>
         <h1>Lasek Wspomnień</h1>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-        <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-        <input type="date" class="search-input" id="searchDate" placeholder="Wpisz datę" />
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+            <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+            <input type="date" class="search-input" id="searchDate" placeholder="Wpisz datę" />
+        </div>
 
         <div id="gallery"></div>
 
@@ -232,7 +234,7 @@
                 if (!response.ok) throw new Error('Upload failed');
                 const result = await response.json();
                 const imageUrl = result.data.link;
-                const uploadDate = new Date().toLocaleDateString('pl-PL');
+                const uploadDate = new Date().toISOString().split('T')[0]; // Zapisz datę w formacie YYYY-MM-DD
 
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
