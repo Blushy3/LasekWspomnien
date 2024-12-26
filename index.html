@@ -59,7 +59,7 @@
             z-index: 1;
         }
 
-        .button {
+        .button, .search-input {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -73,7 +73,7 @@
             z-index: 1;
         }
 
-        .button:hover {
+        .button:hover, .search-input:hover {
             background-color: #45a049;
             transform: scale(1.1);
         }
@@ -185,7 +185,8 @@
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <button class="button" id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-        
+        <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
+
         <div id="gallery"></div>
 
         <div class="description">
@@ -377,6 +378,23 @@
             } catch (error) {
                 console.error('Error showing gallery:', error);
             }
+        }
+
+        function filterGallery() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
+                const dateLabel = item.querySelector('.date-label').textContent;
+                const mediaElement = item.querySelector('img, video');
+                const mediaUrl = mediaElement.src.toLowerCase();
+
+                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
+                    item.style.display = 'inline-block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
 
         window.onload = function() {
