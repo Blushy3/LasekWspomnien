@@ -1,176 +1,211 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lasek Wspomnień</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #ffffff;
-    }
-    h1 {
-      animation: fadeIn 3s, bounce 2s infinite alternate;
-      font-family: 'Cursive', sans-serif;
-      margin-top: 50px;
-    }
-    #upload, #showGallery {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      background-color: #4CAF50;
-      color: #ffffff;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    #upload:hover, #showGallery:hover {
-      background-color: #45a049;
-      transform: scale(1.1);
-    }
-    #gallery {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .gallery-item {
-      display: inline-block;
-      margin: 10px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .gallery-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes bounce {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-10px); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lasek Wspomnień</title>
+    <style>
+        /* Stylizacja strony */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: url('https://imgur.com/wc95oYL.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            animation: fadeIn 3s, bounce 2s infinite alternate;
+            font-family: 'Cursive', sans-serif;
+            margin-top: 50px;
+            font-size: 3em;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        #upload, #showGallery {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #upload:hover, #showGallery:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        #gallery {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .gallery-item {
+            display: inline-block;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .description {
+            margin-top: 50px;
+            font-size: 1.5em;
+            text-align: center;
+            animation: fadeInUp 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+    </style>
 </head>
 <body>
-  <h1>Lasek Wspomnień</h1>
-  <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-  <button id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-  <button id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
-  <div id="gallery"></div>
-  <script>
-    async function uploadFile() {
-      const file = document.getElementById('file').files[0];
-      const formData = new FormData();
-      formData.append('image', file);
+    <h1>Lasek Wspomnień</h1>
+    <p>Witaj w Lasku Wspomnień!</p>
+    <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
+    <button id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+    <button id="showGallery" onclick="showGallery()">Galeria wspomnień</button>
+    <div id="gallery"></div>
 
-      try {
-        const response = await fetch('https://api.imgur.com/3/image', {
-          method: 'POST',
-          headers: {
-            Authorization: '26029964a6a2287',
-          },
-          body: formData,
-        });
+    <div class="description">
+        <p>Poznaj Lasek Wspomnień - miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
+    </div>
 
-        if (!response.ok) throw new Error('Upload failed');
-        const result = await response.json();
-        alert('File uploaded successfully! Image URL: ' + result.data.link);
-        addImageToGallery(result.data.link);
-        await saveImageUrl(result.data.link);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
+    <script>
+        async function uploadFile() {
+            const file = document.getElementById('file').files[0];
+            const formData = new FormData();
+            formData.append('image', file);
 
-    function addImageToGallery(url) {
-      const gallery = document.getElementById('gallery');
-      const img = document.createElement('img');
-      img.src = url;
-      img.classList.add('gallery-item');
-      img.style.width = "200px"; // Możesz dostosować rozmiar
-      img.style.height = "auto"; // Możesz dostosować rozmiar
-      gallery.appendChild(img);
-    }
+            try {
+                const response = await fetch('https://api.imgur.com/3/image', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: '26029964a6a2287',
+                    },
+                    body: formData,
+                });
 
-    async function saveImageUrl(url) {
-      try {
-        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
-
-        if (!response.ok) {
-          console.error('Failed to fetch images.json:', response.status, response.statusText);
-          return;
+                if (!response.ok) throw new Error('Upload failed');
+                const result = await response.json();
+                alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + result.data.link);
+                addImageToGallery(result.data.link);
+                await saveImageUrl(result.data.link);
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        const data = await response.json();
-        console.log('Original data:', data);  // Logowanie oryginalnych danych
-        const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
-        console.log('Decoded content:', content);  // Logowanie dekodowanej zawartości
-        const images = JSON.parse(content);
-        console.log('Parsed images:', images);  // Logowanie tablicy obrazów
-
-        images.push(url);
-        const updatedContent = btoa(JSON.stringify(images, null, 2));
-        console.log('Updated content:', updatedContent);  // Logowanie zaktualizowanej zawartości
-
-        const token = 'GQgVLLTIbH6TtxXoAfajR10OoVhLnM15OWMJ'
-        const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-          method: 'PUT',
-          headers: {
-            'Authorization': 'Bearer ghp_' + token,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: 'Add new image URL',
-            content: updatedContent,
-            sha: data.sha,
-          })
-        });
-
-        if (!updateResponse.ok) {
-          console.error('Failed to update images.json:', updateResponse.status, updateResponse.statusText);
-        }
-      } catch (error) {
-        console.error('Error saving image URL:', error);
-      }
-    }
-
-    async function showGallery() {
-      try {
-        const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
-
-        if (response.ok) {
-          const data = await response.json();
-          const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
-          const images = JSON.parse(content);
-          const gallery = document.getElementById('gallery');
-          gallery.innerHTML = '';
-          images.forEach(url => {
+        function addImageToGallery(url) {
+            const gallery = document.getElementById('gallery');
             const img = document.createElement('img');
             img.src = url;
             img.classList.add('gallery-item');
             img.style.width = "200px"; // Możesz dostosować rozmiar
             img.style.height = "auto"; // Możesz dostosować rozmiar
             gallery.appendChild(img);
-          });
-        } else {
-          console.error('Error fetching gallery images:', response.status, response.statusText);
         }
-      } catch (error) {
-        console.error('Error showing gallery:', error);
-      }
-    }
 
-    window.onload = function() {
-      showGallery();
-    }
-  </script>
+        async function saveImageUrl(url) {
+            try {
+                const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
+
+                if (!response.ok) {
+                    console.error('Failed to fetch images.json:', response.status, response.statusText);
+                    return;
+                }
+
+                const data = await response.json();
+                const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
+                const images = JSON.parse(content);
+
+                images.push(url);
+                const updatedContent = btoa(JSON.stringify(images, null, 2));
+
+                const token = 'GQgVLLTIbH6TtxXoAfajR10OoVhLnM15OWMJ'
+                const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ghp_' + token,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Add new image URL',
+                        content: updatedContent,
+                        sha: data.sha,
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    console.error('Failed to update images.json:', updateResponse.status, updateResponse.statusText);
+                }
+            } catch (error) {
+                console.error('Error saving image URL:', error);
+            }
+        }
+
+        async function showGallery() {
+            try {
+                const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = atob(data.content.replace(/\s/g, '')); // Usunięcie niepoprawnych znaków
+                    const images = JSON.parse(content);
+                    const gallery = document.getElementById('gallery');
+                    gallery.innerHTML = '';
+                    images.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.classList.add('gallery-item');
+                        img.style.width = "200px"; // Możesz dostosować rozmiar
+                        img.style.height = "auto"; // Możesz dostosować rozmiar
+                        gallery.appendChild(img);
+                    });
+                } else {
+                    console.error('Error fetching gallery images:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Error showing gallery:', error);
+            }
+        }
+
+        window.onload = function() {
+            showGallery();
+        }
+    </script>
 </body>
 </html>
