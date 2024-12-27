@@ -298,7 +298,49 @@
             });
         }
 
+        function setCookie(name, value, hours) {
+            const d = new Date();
+            d.setTime(d.getTime() + (hours * 60 * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const cname = name + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(cname) == 0) {
+                    return c.substring(cname.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkUploadLimit() {
+            const lastUploadTime = getCookie("lastUploadTime");
+            if (lastUploadTime) {
+                const now = new Date().getTime();
+                const lastUpload = new Date(lastUploadTime).getTime();
+                const hoursPassed = (now - lastUpload) / (1000 * 60 * 60);
+                if (hoursPassed < 12) {
+                    const hoursRemaining = 12 - Math.floor(hoursPassed);
+                    const minutesRemaining = 60 - Math.floor(((now - lastUpload) % (1000 * 60 * 60)) / (1000 * 60));
+                    alert(`Możesz przesłać kolejne wspomnienie za ${hoursRemaining} godzin i ${minutesRemaining} minut.`);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         async function uploadFile() {
+            if (!checkUploadLimit()) {
+                return;
+            }
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
             formData.append('image', file);
@@ -323,6 +365,7 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
+                setCookie("lastUploadTime", new Date().toISOString(), 12);
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -480,31 +523,4 @@
                     console.error('Error fetching gallery images:', response.status, response.statusText);
                 }
             } catch (error) {
-                console.error('Error showing gallery:', error);
-            }
-        }
-
-        function filterGallery() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
-                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
-                const dateLabel = item.querySelector('.date-label').textContent;
-                const mediaElement = item.querySelector('img, video');
-                const mediaUrl = mediaElement.src.toLowerCase();
-
-                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
-                    item.style.display = 'inline-block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        window.onload = function () {
-            showGallery();
-        }
-    </script>
-</body>
-
-</html>
+                console.error('Error showing
