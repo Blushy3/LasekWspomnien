@@ -81,15 +81,21 @@
             background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); /* Gradient w odcieniach fioletu, niebieskiego i białego */
             color: #ffffff;
             cursor: pointer;
-            transition: background 0.3s ease-in-out, transform 0.3s;
+            transition: transform 0.3s;
             position: relative;
             z-index: 1;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            animation: gradient-fade 5s ease infinite;
         }
 
         .button:hover {
-            background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff);
             transform: scale(1.1);
+        }
+
+        @keyframes gradient-fade {
+            0% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
+            50% { background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff); }
+            100% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
         }
 
         .search-container {
@@ -112,9 +118,10 @@
             transition: color 0.3s;
         }
 
-        .search-input:hover {
+        .search-input:hover,
+        .search-input:focus {
             background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
-            color: #1a1a1a; /* Prawie czarny kolor tekstu po najechaniu */
+            color: #000000; /* Czarny kolor tekstu po najechaniu */
         }
 
         .search-icon {
