@@ -191,7 +191,7 @@
             margin: 5px 0;
         }
 
-        #countdown {
+        .countdown {
             margin-top: 20px;
             font-size: 1.5em;
             color: #ff0000;
@@ -227,7 +227,6 @@
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
-        <div id="countdown" style="display: none;">Następne wysłanie będzie możliwe za: <span id="timer"></span></div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -241,11 +240,12 @@
             <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
             <p>Wyszukiwać można po formatach plików jak i datach.</p>
         </div>
+
+        <div class="countdown" id="countdown" style="display: none;"></div>
     </main>
 
     <script>
         let isOverlayActive = false;
-        let countdownInterval;
 
         if (window.innerWidth >= 768) {
             document.addEventListener('mousemove', (e) => {
@@ -255,31 +255,6 @@
                     document.body.style.transform = `translate(${x}px, ${y}px)`;
                 }
             });
-        }
-
-        function startCountdown(duration) {
-            const countdownElement = document.getElementById('countdown');
-            const timerElement = document.getElementById('timer');
-            countdownElement.style.display = 'block';
-            const endTime = Date.now() + duration;
-
-            function updateTimer() {
-                const remainingTime = endTime - Date.now();
-                if (remainingTime <= 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.style.display = 'none';
-                    document.getElementById('upload').disabled = false;
-                    document.getElementById('upload').innerText = 'Prześlij wspomnienie';
-                } else {
-                    const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-                    const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-                    const seconds = Math.floor((remainingTime / 1000) % 60);
-                    timerElement.innerText = `${hours}h ${minutes}m ${seconds}s`;
-                }
-            }
-
-            updateTimer();
-            countdownInterval = setInterval(updateTimer, 1000);
         }
 
         async function uploadFile() {
@@ -305,11 +280,7 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
-
-                // Blokowanie przycisku na 12 godzin
-                document.getElementById('upload').disabled = true;
-                document.getElementById('upload').innerText = 'Wysyłanie zablokowane';
-                startCountdown(12 * 60 * 60 * 1000); // 12 godzin w milisekundach
+                startCountdown();
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -462,4 +433,35 @@
         }
 
         function filterGallery() {
-            const searchTerm = document.get
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
+                const dateLabel = item.querySelector('.date-label').textContent;
+                const mediaElement = item.querySelector('img, video');
+                const mediaUrl = mediaElement.src.toLowerCase();
+
+                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
+                    item.style.display = 'inline-block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const uploadButton = document.getElementById('upload');
+            const endTime = new Date().getTime() + 12 * 60 * 60 * 1000; // 12 godzin od teraz
+
+            uploadButton.disabled = true;
+            countdownElement.style.display = 'block';
+
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `Możesz przesłać kolejne wspomnienie za ${hours}h ${minutes}m ${seconds}s`;
