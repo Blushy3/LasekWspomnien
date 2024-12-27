@@ -112,10 +112,9 @@
             transition: color 0.3s;
         }
 
-        .search-input:hover,
-        .search-input:focus {
+        .search-input:hover {
             background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
-            color: #000000; /* Czarny kolor tekstu po najechaniu */
+            color: #1a1a1a; /* Prawie czarny kolor tekstu po najechaniu */
         }
 
         .search-icon {
@@ -192,14 +191,6 @@
             margin: 5px 0;
         }
 
-        #countdown {
-            font-size: 1.2em;
-            color: #ff0000;
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -229,8 +220,7 @@
             <p>Miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <button class="button" id="upload" onclick="document.getElementById('file').click()" disabled>Prześlij wspomnienie</button>
-        <div id="countdown"></div>
+        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -282,8 +272,6 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
-
-                startCountdown(); // Rozpocznij odliczanie po wysłaniu pliku
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -452,24 +440,9 @@
             });
         }
 
-        function startCountdown() {
-            const button = document.getElementById('upload');
-            const countdownElement = document.getElementById('countdown');
-            const endTime = new Date().getTime() + 12 * 60 * 60 * 1000; // 12 godzin od teraz
-
-            button.disabled = true;
-
-            const interval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = endTime - now;
-
-                const hours = Math.floor((distance % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-                const minutes = Math.floor((distance % (60 * 60 * 1000)) / (60 * 1000));
-                const seconds = Math.floor((distance % (60 * 1000)) / 1000);
-
-                countdownElement.innerHTML = `Czas do następnego przesłania: ${hours}h ${minutes}m ${seconds}s`;
-
-                if (distance < 0) {
-                    clearInterval(interval);
-                    button.disabled = false;
-                    countdownElement.innerHTML =
+        window.onload = function() {
+            showGallery();
+        }
+    </script>
+</body>
+</html>
