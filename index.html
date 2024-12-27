@@ -191,6 +191,13 @@
             margin: 5px 0;
         }
 
+        .countdown {
+            font-size: 1.5em;
+            color: #ff0000;
+            margin-top: 20px;
+            display: none;
+        }
+
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -221,6 +228,7 @@
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <div class="countdown" id="countdown"></div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -272,6 +280,7 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
+                startCountdown();
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -440,9 +449,25 @@
             });
         }
 
-        window.onload = function() {
-            showGallery();
-        }
-    </script>
-</body>
-</html>
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const buttonElement = document.getElementById('upload');
+            const now = new Date().getTime();
+            const twelveHours = 12 * 60 * 60 * 1000;
+            const endTime = now + twelveHours;
+            localStorage.setItem('countdownEndTime', endTime);
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance < 0) {
+                    countdownElement.style.display = 'none';
+                    buttonElement.disabled = false;
+                    localStorage.removeItem('countdownEndTime');
+                    clearInterval(interval);
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000
