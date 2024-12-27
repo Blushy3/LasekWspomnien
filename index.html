@@ -276,11 +276,10 @@
         <div id="gallery"></div>
 
         <div class="small-print">
-            <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś
-                czasie. Prosimy o nie dodawanie takich zdjęć.</p>
+            <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
             <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
-            <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to
-                na spokojnie odzyskać.</p>
+            <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
+            <p>Prosimy, aby nie spamować przesyłaniem zdjęć. Wysyłajcie wspomnienia od czasu do czasu, aby uniknąć nałożenia ograniczenia na przesyłanie plików.</p>
             <p>Wyszukiwać można po formatach plików jak i datach.</p>
         </div>
     </main>
@@ -323,13 +322,6 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
-
-                // Ustawienie blokady przesyłania plików na 12 godzin
-                const expirationTime = new Date().getTime() + 12 * 60 * 60 * 1000;
-                document.cookie = `uploadBlocked=true; expires=${new Date(expirationTime).toUTCString()}; path=/`;
-                document.getElementById('upload').disabled = true;
-                startCountdown(expirationTime);
-
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -508,16 +500,10 @@
             });
         }
 
-        function startCountdown(expirationTime) {
-            const countdownElement = document.createElement('div');
-            countdownElement.id = 'countdown';
-            countdownElement.style.marginTop = '20px';
-            countdownElement.style.fontSize = '1.5em';
-            document.body.appendChild(countdownElement);
+        window.onload = function () {
+            showGallery();
+        }
+    </script>
+</body>
 
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = expirationTime - now;
-
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance %
+</html>
