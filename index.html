@@ -413,7 +413,9 @@
                     const images = JSON.parse(content);
                     const gallery = document.getElementById('gallery');
                     gallery.innerHTML = '';
-                    images.forEach(({ url, date }) => {
+                    // Sortowanie zdjęć po dacie dodania i wyświetlanie tylko 3 najnowszych
+                    images.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    images.slice(0, 3).forEach(({ url, date }) => {
                         addMediaToGallery(url, date);
                     });
                 } else {
