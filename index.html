@@ -112,10 +112,9 @@
             transition: color 0.3s;
         }
 
-        .search-input:hover,
-        .search-input:focus {
+        .search-input:hover {
             background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
-            color: #000000; /* Czarny kolor tekstu po najechaniu */
+            color: #1a1a1a; /* Prawie czarny kolor tekstu po najechaniu */
         }
 
         .search-icon {
@@ -413,9 +412,7 @@
                     const images = JSON.parse(content);
                     const gallery = document.getElementById('gallery');
                     gallery.innerHTML = '';
-                    // Sortowanie zdjęć po dacie dodania i wyświetlanie tylko 3 najnowszych
-                    images.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    images.slice(0, 3).forEach(({ url, date }) => {
+                    images.forEach(({ url, date }) => {
                         addMediaToGallery(url, date);
                     });
                 } else {
