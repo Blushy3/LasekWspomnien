@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lasek Wspomnień</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         /* Stylizacja strony */
         @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
@@ -146,7 +147,7 @@
             margin-top: 20px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
             position: relative;
             z-index: 1;
         }
@@ -276,9 +277,11 @@
         <div id="gallery"></div>
 
         <div class="small-print">
-            <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
+            <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś
+                czasie. Prosimy o nie dodawanie takich zdjęć.</p>
             <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
-            <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to na spokojnie odzyskać.</p>
+            <p>Wszystkie wasze zdjęcia są przechowywane w kodzie jak i w chmurze. Jeżeli coś zniknie ze strony, możemy to
+                na spokojnie odzyskać.</p>
             <p>Prosimy, aby nie spamować przesyłaniem zdjęć. Wysyłajcie wspomnienia od czasu do czasu, aby uniknąć nałożenia ograniczenia na przesyłanie plików.</p>
             <p>Wyszukiwać można po formatach plików jak i datach.</p>
         </div>
@@ -373,7 +376,8 @@
 
             mediaContainer.appendChild(mediaElement);
             mediaContainer.appendChild(labelContainer);
-            gallery.appendChild(mediaContainer);
+            gallery.insertBefore(mediaContainer, gallery.firstChild);
+            // Dodanie nowego elementu na początku galerii
 
             mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
         }
