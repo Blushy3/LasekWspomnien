@@ -81,21 +81,15 @@
             background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); /* Gradient w odcieniach fioletu, niebieskiego i białego */
             color: #ffffff;
             cursor: pointer;
-            transition: background 0.3s, transform 0.3s;
+            transition: background 0.3s ease-in-out, transform 0.3s;
             position: relative;
             z-index: 1;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
 
         .button:hover {
-            animation: gradient-shift 2s infinite;
+            background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff);
             transform: scale(1.1);
-        }
-
-        @keyframes gradient-shift {
-            0% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
-            50% { background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff); }
-            100% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
         }
 
         .search-container {
