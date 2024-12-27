@@ -88,8 +88,14 @@
         }
 
         .button:hover {
-            background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff);
+            animation: gradient-shift 2s infinite;
             transform: scale(1.1);
+        }
+
+        @keyframes gradient-shift {
+            0% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
+            50% { background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff); }
+            100% { background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff); }
         }
 
         .search-container {
@@ -109,10 +115,12 @@
             border: none;
             height: 40px;
             font-size: 16px;
+            transition: color 0.3s;
         }
 
         .search-input:hover {
             background-color: rgba(200, 200, 200, 0.5); /* Ciemniejszy szary po najechaniu */
+            color: #1a1a1a; /* Prawie czarny kolor tekstu po najechaniu */
         }
 
         .search-icon {
