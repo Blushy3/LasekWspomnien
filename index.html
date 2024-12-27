@@ -293,6 +293,14 @@
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
                 formatLabel = 'GIF';
+            } else if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+                formatLabel = 'JPG';
+            } else if (url.endsWith('.png')) {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+                formatLabel = 'PNG';
             } else {
                 mediaElement = document.createElement('img');
                 mediaElement.src = url;
