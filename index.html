@@ -191,6 +191,12 @@
             margin: 5px 0;
         }
 
+        #countdown {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -221,6 +227,7 @@
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <div id="countdown" style="display: none;">Następne wysłanie będzie możliwe za: <span id="timer"></span></div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -238,6 +245,7 @@
 
     <script>
         let isOverlayActive = false;
+        let countdownInterval;
 
         if (window.innerWidth >= 768) {
             document.addEventListener('mousemove', (e) => {
@@ -247,6 +255,31 @@
                     document.body.style.transform = `translate(${x}px, ${y}px)`;
                 }
             });
+        }
+
+        function startCountdown(duration) {
+            const countdownElement = document.getElementById('countdown');
+            const timerElement = document.getElementById('timer');
+            countdownElement.style.display = 'block';
+            const endTime = Date.now() + duration;
+
+            function updateTimer() {
+                const remainingTime = endTime - Date.now();
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
+                    document.getElementById('upload').disabled = false;
+                    document.getElementById('upload').innerText = 'Prześlij wspomnienie';
+                } else {
+                    const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+                    const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+                    const seconds = Math.floor((remainingTime / 1000) % 60);
+                    timerElement.innerText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 1000);
         }
 
         async function uploadFile() {
@@ -272,6 +305,11 @@
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
+
+                // Blokowanie przycisku na 12 godzin
+                document.getElementById('upload').disabled = true;
+                document.getElementById('upload').innerText = 'Wysyłanie zablokowane';
+                startCountdown(12 * 60 * 60 * 1000); // 12 godzin w milisekundach
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -424,25 +462,4 @@
         }
 
         function filterGallery() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
-                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
-                const dateLabel = item.querySelector('.date-label').textContent;
-                const mediaElement = item.querySelector('img, video');
-                const mediaUrl = mediaElement.src.toLowerCase();
-
-                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
-                    item.style.display = 'inline-block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        window.onload = function() {
-            showGallery();
-        }
-    </script>
-</body>
-</html>
+            const searchTerm = document.get
