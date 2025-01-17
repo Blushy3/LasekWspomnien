@@ -167,7 +167,8 @@
         }
 
         .gallery-item img,
-        .gallery-item video {
+        .gallery-item video,
+        .gallery-item iframe {
             width: 200px;
             height: auto;
             border-radius: 10px;
@@ -321,6 +322,7 @@
             margin-top: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            display: none;
         }
     </style>
 </head>
@@ -356,7 +358,7 @@
             <h2>Wybierz opcję</h2>
             <button class="modal-button" onclick="document.getElementById('file').click()">Prześlij plik</button>
             <button class="modal-button" onclick="openLinkInput()">Udostępnij klip</button>
-            <input type="text" id="linkInput" class="input-link" placeholder="Wklej link do klipu z Medal.tv" style="display: none;" onkeypress="submitLink(event)" />
+            <input type="text" id="linkInput" class="input-link" placeholder="Wklej link do klipu z Medal.tv" onkeypress="submitLink(event)" />
         </div>
     </div>
 
@@ -515,9 +517,13 @@
 
             if (clonedElement.tagName === 'VIDEO') {
                 clonedElement.controls = true;
-                // Enable controls for enlarged video
                 clonedElement.autoplay = true;
-                // Autoplay video when enlarged
             }
 
-            overlay
+            overlay.appendChild(clonedElement);
+            document.body.appendChild(overlay);
+        }
+
+        async function saveImageUrl(url, date) {
+            try {
+                const response = await fetch('https://api.github.com/repos/Blushy3/Lasek
