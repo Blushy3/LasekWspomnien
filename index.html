@@ -258,6 +258,21 @@
                 opacity: 1;
             }
         }
+
+        #uploadOptions {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            padding: 10px;
+        }
+
+        #uploadOptions button {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -268,7 +283,11 @@
             <p>Miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <button class="button" id="uploadMemoryButton">Prześlij wspomnienie</button>
+        <div id="uploadOptions">
+            <button id="uploadFileButton">Prześlij plik</button>
+            <button id="shareClipButton">Udostępnij klip</button>
+        </div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -501,10 +520,5 @@
             });
         }
 
-        window.onload = function () {
-            showGallery();
-        }
-    </script>
-</body>
-
-</html>
+        // Pokaż menu wyboru po kliknięciu przycisku "Prześlij wspomnienie"
+        document.getElementById('uploadMemoryButton').addEventListener('click', function (event)
