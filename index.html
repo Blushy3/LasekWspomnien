@@ -521,4 +521,7 @@
         }
 
         // Pokaż menu wyboru po kliknięciu przycisku "Prześlij wspomnienie"
-        document.getElementById('uploadMemoryButton').addEventListener('click', function (event)
+        document.getElementById('uploadMemoryButton').addEventListener('click', function (event) {
+            var uploadOptions = document.getElementById('uploadOptions');
+            uploadOptions.style.display = 'block';
+            uploadOptions.style.left = event
