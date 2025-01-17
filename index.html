@@ -237,12 +237,20 @@
         .menu {
             display: none;
             margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+    
+        .menu.show {
+            display: block;
+            opacity: 1;
         }
 
         .video-container {
             display: none;
             margin-top: 10px;
         }
+        
     </style>
 </head>
 <body>
@@ -487,7 +495,8 @@
             }
             // Pokaż menu
             window.showMenu = function() {
-                document.getElementById('menu').style.display = 'block';
+                const menu = document.getElementById('menu');
+                menu.classList.add('show');
             }
 
             // Pokaż input do przesyłania pliku
@@ -499,7 +508,7 @@
             window.showClipInput = function() {
                 document.getElementById('clipInputContainer').style.display = 'block';
             }            
-            function saveClip() {
+            window.saveClip = function() {
                 const clipUrl = document.getElementById('clipUrl').value;
                 if (clipUrl) {
                     const clipData = {
@@ -511,7 +520,7 @@
                         .then(response => response.json())
                         .then(data => {
                             data.push(clipData);
-
+    
                             fetch('images.json', {
                                 method: 'POST',
                                 headers: {
@@ -532,7 +541,7 @@
                             alert('Błąd odczytu istniejących danych.');
                         });
                 }
-            }
+            }       
         });
     </script>
 </body>
