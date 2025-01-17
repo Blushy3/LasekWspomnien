@@ -258,6 +258,16 @@
                 opacity: 1;
             }
         }
+
+        .menu {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .video-container {
+            display: none;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -268,7 +278,11 @@
             <p>Miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <button class="button" id="upload" onclick="showMenu()">Prześlij wspomnienie</button>
+        <div class="menu" id="menu">
+            <button class="button" onclick="showFileUpload()">Prześlij plik</button>
+            <button class="button" onclick="showClipInput()">Udostępnij klip</button>
+        </div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
@@ -283,6 +297,11 @@
             <p>Prosimy, aby nie spamować przesyłaniem zdjęć. Wysyłajcie wspomnienia od czasu do czasu, aby uniknąć nałożenia ograniczenia na przesyłanie plików.</p>
             <p>Wyszukiwać można po formatach plików jak i datach.</p>
         </div>
+        <div id="clipInputContainer" class="video-container">
+            <input type="text" id="clipUrl" placeholder="Wklej link do klipu z Medal.tv">
+            <button onclick="saveClip()">Zapisz klip</button>
+        </div>
+
     </main>
 
     <script>
@@ -501,10 +520,4 @@
             });
         }
 
-        window.onload = function () {
-            showGallery();
-        }
-    </script>
-</body>
-
-</html>
+        window.onload = function
