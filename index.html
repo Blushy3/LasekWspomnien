@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lasek Wspomnień</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="path/to/your/favicon.ico" type="image/x-icon">
     <style>
         /* Stylizacja strony */
         @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
@@ -291,7 +291,23 @@
                 });
             }
 
-            async function uploadFile() {
+            // Pokaż menu
+            window.showMenu = function() {
+                document.getElementById('menu').style.display = 'block';
+            }
+
+            // Pokaż input do przesyłania pliku
+            window.showFileUpload = function() {
+                document.getElementById('file').click();
+            }
+
+            // Pokaż input do wklejenia linku do klipu
+            window.showClipInput = function() {
+                document.getElementById('clipInputContainer').style.display = 'block';
+            }
+
+            // Funkcja do przesyłania pliku
+            window.uploadFile = async function() {
                 const file = document.getElementById('file').files[0];
                 const formData = new FormData();
                 formData.append('image', file);
@@ -319,6 +335,7 @@
                 }
             }
 
+            // Dodaj media do galerii
             function addMediaToGallery(url, date) {
                 const gallery = document.getElementById('gallery');
                 const mediaContainer = document.createElement('div');
@@ -370,6 +387,7 @@
                 mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
             }
 
+            // Powiększ media
             function enlargeMedia(mediaElement, formatLabel) {
                 isOverlayActive = true;
 
@@ -406,6 +424,7 @@
                 document.body.appendChild(overlay);
             }
 
+            // Zapisz URL obrazu
             async function saveImageUrl(url, date) {
                 try {
                     const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
@@ -444,6 +463,7 @@
                 }
             }
 
+            // Pokaż galerię
             async function showGallery() {
                 try {
                     const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
@@ -465,7 +485,8 @@
                 }
             }
 
-            function filterGallery() {
+            // Filtruj galerię
+            window.filterGallery = function() {
                 const searchTerm = document.getElementById('searchInput').value.toLowerCase();
                 const galleryItems = document.querySelectorAll('.gallery-item');
                 galleryItems.forEach(item => {
@@ -482,23 +503,8 @@
                 });
             }
 
-            window.onload = function() {
-                showGallery();
-            }
-
-            function showMenu() {
-                document.getElementById('menu').style.display = 'block';
-            }
-
-            function showFileUpload() {
-                document.getElementById('file').click();
-            }
-
-            function showClipInput() {
-                document.getElementById('clipInputContainer').style.display = 'block';
-            }
-
-            function saveClip() {
+            // Zapisz klip
+            window.saveClip = function() {
                 const clipUrl = document.getElementById('clipUrl').value;
                 if (clipUrl) {
                     const clipData = {
@@ -527,8 +533,7 @@
                             });
                         })
                         .catch(error => {
-                            console.error('Error fetching existing data:', error);
-                            alert('Błąd odczytu istniejących danych.');
+                            console.error('Error fetching existing data
                         });
                 }
             }
