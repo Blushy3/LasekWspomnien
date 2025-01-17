@@ -232,8 +232,20 @@
                 transform: scale(1);
                 opacity: 1;
             }
-            .menu .button {
+            .menu {
+                display: none;
                 margin-top: 10px;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+            }
+            
+            .menu.show {
+                display: flex;
+                opacity: 1;
+                gap: 20px; /* Odsunięcie przycisków od siebie */
+            }
+            
+            .menu .button {
                 padding: 15px 30px;
                 font-size: 18px;
                 border: none;
@@ -245,7 +257,6 @@
                 position: relative;
                 z-index: 1;
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-                margin-right: 10px; /* Odsunięcie przycisków od siebie */
             }
             
             .menu .button:hover {
@@ -255,9 +266,12 @@
             
             .video-container {
                 display: none;
-                margin-top: 10px;
                 flex-direction: column; /* Ustawienie elementów w kolumnie */
                 align-items: center;
+                position: absolute;
+                top: 0;
+                left: 100%; /* Pozycjonowanie obok przycisku */
+                margin-left: 20px; /* Odstęp od przycisku "Udostępnij klip" */
             }
             
             .video-container .search-input {
@@ -587,7 +601,7 @@
                             alert('Błąd odczytu istniejących danych.');
                         });
                 }
-            }  
+            }
         });
     </script>
 </body>
