@@ -232,24 +232,71 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-
-        .menu {
-            display: none;
-            margin-top: 10px;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-    
-        .menu.show {
-            display: block;
-            opacity: 1;
-        }
-
-        .video-container {
-            display: none;
-            margin-top: 10px;
-        }
+            .menu .button {
+                margin-top: 10px;
+                padding: 15px 30px;
+                font-size: 18px;
+                border: none;
+                border-radius: 50px;
+                background: linear-gradient(135deg, #ff7f50, #ff6347, #ff4500);
+                color: #ffffff;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.3s;
+                position: relative;
+                z-index: 1;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+                margin-right: 10px; /* Odsunięcie przycisków od siebie */
+            }
+            
+            .menu .button:hover {
+                background: linear-gradient(135deg, #ff6347, #ff7f50, #ff4500);
+                transform: scale(1.1);
+            }
+            
+            .video-container {
+                display: none;
+                margin-top: 10px;
+                flex-direction: column; /* Ustawienie elementów w kolumnie */
+                align-items: center;
+            }
+            
+            .video-container .search-input {
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.5);
+                color: #000000;
+                padding-left: 40px;
+                border-radius: 10px;
+                border: none;
+                height: 40px;
+                font-size: 16px;
+                transition: color 0.3s;
+                margin-bottom: 10px;
+            }
+            
+            .video-container .search-input:hover {
+                background-color: rgba(200, 200, 200, 0.5);
+                color: #1a1a1a;
+            }
+            
+            .video-container .button {
+                margin-top: 10px;
+                padding: 15px 30px;
+                font-size: 18px;
+                border: none;
+                border-radius: 50px;
+                background: linear-gradient(135deg, #8a2be2, #4169e1, #ffffff);
+                color: #ffffff;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.3s;
+                position: relative;
+                z-index: 1;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            }
+            
+            .video-container .button:hover {
+                background: linear-gradient(135deg, #4169e1, #8a2be2, #ffffff);
+                transform: scale(1.1);
+            }
         
     </style>
 </head>
@@ -280,8 +327,8 @@
             <p>Wyszukiwać można po formatach plików jak i datach.</p>
         </div>
         <div id="clipInputContainer" class="video-container">
-            <input type="text" id="clipUrl" placeholder="Wklej link do klipu z Medal.tv">
-            <button onclick="saveClip()">Zapisz klip</button>
+            <input type="text" class="search-input" id="clipUrl" placeholder="Wklej link do klipu z Medal.tv">
+            <button class="button" onclick="saveClip()">Zapisz klip</button>
         </div>
     </main>
 
@@ -498,16 +545,15 @@
                 const menu = document.getElementById('menu');
                 menu.classList.add('show');
             }
-
-            // Pokaż input do przesyłania pliku
+            
             window.showFileUpload = function() {
                 document.getElementById('file').click();
             }
-
-            // Pokaż input do wklejenia linku do klipu
+            
             window.showClipInput = function() {
-                document.getElementById('clipInputContainer').style.display = 'block';
-            }            
+                const clipInputContainer = document.getElementById('clipInputContainer');
+                clipInputContainer.style.display = 'flex';
+            }
             window.saveClip = function() {
                 const clipUrl = document.getElementById('clipUrl').value;
                 if (clipUrl) {
@@ -515,12 +561,12 @@
                         date: new Date().toISOString(),
                         link: clipUrl
                     };
-
+            
                     fetch('images.json')
                         .then(response => response.json())
                         .then(data => {
                             data.push(clipData);
-    
+            
                             fetch('images.json', {
                                 method: 'POST',
                                 headers: {
@@ -541,7 +587,7 @@
                             alert('Błąd odczytu istniejących danych.');
                         });
                 }
-            }       
+            }  
         });
     </script>
 </body>
