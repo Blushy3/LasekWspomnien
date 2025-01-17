@@ -268,9 +268,16 @@
             <p>Miejsce, gdzie zapiszesz swoje wspomnienia na zawsze i nigdy nie znikną.</p>
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
-        <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <button class="button" id="upload" onclick="showMenu()">Prześlij wspomnienie</button>
+        <div class="menu" id="menu">
+            <button class="button" onclick="showFileUpload()">Prześlij plik</button>
+            <div class="video-container">
+                <input type="text" class="search-input" id="clipUrl" placeholder="Wklej link do klipu z Medal.tv">
+                <button class="button" onclick="saveClip()">Zapisz klip</button>
+            </div>
+        </div>
         <div class="search-container">
-            <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
+            <span class="search-icon">&#128269;</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
         </div>
 
@@ -286,225 +293,272 @@
     </main>
 
     <script>
-        let isOverlayActive = false;
-
-        if (window.innerWidth >= 768) {
-            document.addEventListener('mousemove', (e) => {
-                if (!isOverlayActive) {
-                    const x = (e.clientX / window.innerWidth - 0.5) * 20;
-                    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-                    document.body.style.transform = `translate(${x}px, ${y}px)`;
-                }
-            });
-        }
-
-        async function uploadFile() {
-            const file = document.getElementById('file').files[0];
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                console.log('Starting upload...');
-                const response = await fetch('https://api.imgur.com/3/image', {
-                    method: 'POST',
-                    headers: {
-                        Authorization: 'Bearer YOUR_ACCESS_TOKEN',
-                        // Upewnij się, że token jest poprawny
-                    },
-                    body: formData,
+        document.addEventListener('DOMContentLoaded', function() {
+            let isOverlayActive = false;
+        
+            if (window.innerWidth >= 768) {
+                document.addEventListener('mousemove', (e) => {
+                    if (!isOverlayActive) {
+                        const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                        const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                        document.body.style.transform = `translate(${x}px, ${y}px)`;
+                    }
                 });
-
-                if (!response.ok) throw new Error('Upload failed');
-                const result = await response.json();
-                const imageUrl = result.data.link;
-                const uploadDate = new Date().toISOString().split('T')[0];
-                // Zapisz datę w formacie YYYY-MM-DD
-
-                alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
-                addMediaToGallery(imageUrl, uploadDate);
-                await saveImageUrl(imageUrl, uploadDate);
-            } catch (error) {
-                console.error('Error:', error);
             }
-        }
-
-        function addMediaToGallery(url, date) {
-            const gallery = document.getElementById('gallery');
-            const mediaContainer = document.createElement('div');
-            mediaContainer.classList.add('gallery-item');
-
-            let mediaElement;
-            let formatLabel;
-            if (url.endsWith('.mp4')) {
-                mediaElement = document.createElement('video');
-                mediaElement.src = url;
-                mediaElement.controls = false; // Disable controls initially
-                mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
-                formatLabel = 'MP4';
-            } else if (url.endsWith('.gif')) {
-                mediaElement = document.createElement('img');
-                mediaElement.src = url;
-                formatLabel = 'GIF';
-            } else if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
-                mediaElement = document.createElement('img');
-                mediaElement.src = url;
-                formatLabel = 'JPG';
-            } else if (url.endsWith('.png')) {
-                mediaElement = document.createElement('img');
-                mediaElement.src = url;
-                formatLabel = 'PNG';
-            } else {
-                mediaElement = document.createElement('img');
-                mediaElement.src = url;
-                formatLabel = 'IMG';
+        
+            window.showMenu = function() {
+                const menu = document.getElementById('menu');
+                menu.classList.add('show');
             }
-
-            const formatLabelElement = document.createElement('div');
-            formatLabelElement.classList.add('format-label');
-            formatLabelElement.textContent = formatLabel;
-
-            const dateLabelElement = document.createElement('div');
-            dateLabelElement.classList.add('date-label');
-            dateLabelElement.textContent = date;
-
-            const labelContainer = document.createElement('div');
-            labelContainer.classList.add('label-container');
-            labelContainer.appendChild(dateLabelElement);
-            labelContainer.appendChild(formatLabelElement);
-
-            mediaContainer.appendChild(mediaElement);
-            mediaContainer.appendChild(labelContainer);
-            gallery.insertBefore(mediaContainer, gallery.firstChild);
-
-            mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
-        }
-
-        function enlargeMedia(mediaElement, formatLabel) {
-            isOverlayActive = true;
-
-            const overlay = document.createElement('div');
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            overlay.style.zIndex = '1000';
-            overlay.onclick = () => {
-                document.body.removeChild(overlay);
-                isOverlayActive = false;
-            };
-
-            const clonedElement = mediaElement.cloneNode(true);
-            clonedElement.style.maxWidth = '90%';
-            clonedElement.style.maxHeight = '90%';
-            clonedElement.style.borderRadius = '10px';
-            clonedElement.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-            clonedElement.style.transition = 'transform 0.3s';
-            clonedElement.style.animation = 'zoomIn 0.5s ease';
-
-            if (clonedElement.tagName === 'VIDEO') {
-                clonedElement.controls = true;
-                // Enable controls for enlarged video
-                clonedElement.autoplay = true;
-                // Autoplay video when enlarged
+        
+            window.showFileUpload = function() {
+                document.getElementById('file').click();
             }
-
-            overlay.appendChild(clonedElement);
-            document.body.appendChild(overlay);
-        }
-
-        async function saveImageUrl(url, date) {
-            try {
-                const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
-
-                if (!response.ok) {
-                    console.error('Failed to fetch images.json:', response.status, response.statusText);
-                    return;
+        
+            // Funkcja do przesyłania pliku
+            window.uploadFile = async function() {
+                const file = document.getElementById('file').files[0];
+                const formData = new FormData();
+                formData.append('image', file);
+        
+                try {
+                    console.log('Starting upload...');
+                    const response = await fetch('https://api.imgur.com/3/image', {
+                        method: 'POST',
+                        headers: {
+                            Authorization: 'Bearer YOUR_ACCESS_TOKEN',
+                        },
+                        body: formData,
+                    });
+        
+                    if (!response.ok) throw new Error('Upload failed');
+                    const result = await response.json();
+                    const imageUrl = result.data.link;
+                    const uploadDate = new Date().toISOString().split('T')[0];
+        
+                    alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
+                    addMediaToGallery(imageUrl, uploadDate);
+                    await saveImageUrl(imageUrl, uploadDate);
+                } catch (error) {
+                    console.error('Error:', error);
                 }
-
-                const data = await response.json();
-                const content = atob(data.content.replace(/\s/g, ''));
-                // Usunięcie niepoprawnych znaków
-                const images = JSON.parse(content);
-
-                images.push({
-                    url,
-                    date
-                });
-                const updatedContent = btoa(JSON.stringify(images, null, 2));
-
-                const token = 'GQgVLLTIbH6TtxXoAfajR10OoVhLnM15OWMJ'
-                const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': 'Bearer ghp_' + token,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: 'Add new image URL',
-                        content: updatedContent,
-                        sha: data.sha,
-                    })
-                });
-
-                if (!updateResponse.ok) {
-                    console.error('Failed to update images.json:', updateResponse.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error saving image URL:', error);
             }
-        }
-
-        async function showGallery() {
-            try {
-                const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
-
-                if (response.ok) {
+        
+            // Dodaj media do galerii
+            function addMediaToGallery(url, date) {
+                const gallery = document.getElementById('gallery');
+                const mediaContainer = document.createElement('div');
+                mediaContainer.classList.add('gallery-item');
+        
+                let mediaElement;
+                let formatLabel;
+                if (url.endsWith('.mp4')) {
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = url;
+                    mediaElement.controls = false;
+                    mediaElement.setAttribute('controlsList', 'nodownload');
+                    formatLabel = 'MP4';
+                } else if (url.endsWith('.gif')) {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = url;
+                    formatLabel = 'GIF';
+                } else if (url.endsWith('.jpg') || url.endsWith('.jpeg')) {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = url;
+                    formatLabel = 'JPG';
+                } else if (url.endsWith('.png')) {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = url;
+                    formatLabel = 'PNG';
+                } else {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = url;
+                    formatLabel = 'IMG';
+                }
+        
+                const formatLabelElement = document.createElement('div');
+                formatLabelElement.classList.add('format-label');
+                formatLabelElement.textContent = formatLabel;
+        
+                const dateLabelElement = document.createElement('div');
+                dateLabelElement.classList.add('date-label');
+                dateLabelElement.textContent = date;
+        
+                const labelContainer = document.createElement('div');
+                labelContainer.classList.add('label-container');
+                labelContainer.appendChild(dateLabelElement);
+                labelContainer.appendChild(formatLabelElement);
+        
+                mediaContainer.appendChild(mediaElement);
+                mediaContainer.appendChild(labelContainer);
+                gallery.insertBefore(mediaContainer, gallery.firstChild);
+        
+                mediaElement.onclick = () => enlargeMedia(mediaElement, formatLabel);
+            }
+        
+            // Powiększ media
+            function enlargeMedia(mediaElement, formatLabel) {
+                isOverlayActive = true;
+        
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                overlay.style.display = 'flex';
+                overlay.style.justifyContent = 'center';
+                overlay.style.alignItems = 'center';
+                overlay.style.zIndex = '1000';
+                overlay.onclick = () => {
+                    document.body.removeChild(overlay);
+                    isOverlayActive = false;
+                };
+        
+                const clonedElement = mediaElement.cloneNode(true);
+                clonedElement.style.maxWidth = '90%';
+                clonedElement.style.maxHeight = '90%';
+                clonedElement.style.borderRadius = '10px';
+                clonedElement.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                clonedElement.style.transition = 'transform 0.3s';
+                clonedElement.style.animation = 'zoomIn 0.5s ease';
+        
+                if (clonedElement.tagName === 'VIDEO') {
+                    clonedElement.controls = true;
+                    clonedElement.autoplay = true;
+                }
+        
+                overlay.appendChild(clonedElement);
+                document.body.appendChild(overlay);
+            }
+        
+            // Zapisz URL obrazu
+            async function saveImageUrl(url, date) {
+                try {
+                    const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
+        
+                    if (!response.ok) {
+                        console.error('Failed to fetch images.json:', response.status, response.statusText);
+                        return;
+                    }
+        
                     const data = await response.json();
                     const content = atob(data.content.replace(/\s/g, ''));
-                    // Usunięcie niepoprawnych znaków
                     const images = JSON.parse(content);
-                    const gallery = document.getElementById('gallery');
-                    gallery.innerHTML = '';
-                    images.forEach(({
-                        url,
-                        date
-                    }) => {
-                        addMediaToGallery(url, date);
+        
+                    images.push({ url, date });
+                    const updatedContent = btoa(JSON.stringify(images, null, 2));
+        
+                    const token = 'GQgVLLTIbH6TtxXoAfajR10OoVhLnM15OWMJ';
+                    const updateResponse = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'Bearer ghp_' + token,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: 'Add new image URL',
+                            content: updatedContent,
+                            sha: data.sha,
+                        })
                     });
-                } else {
-                    console.error('Error fetching gallery images:', response.status, response.statusText);
+        
+                    if (!updateResponse.ok) {
+                        console.error('Failed to update images.json:', updateResponse.status, response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error saving image URL:', error);
                 }
-            } catch (error) {
-                console.error('Error showing gallery:', error);
             }
-        }
-
-        function filterGallery() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
-                const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
-                const dateLabel = item.querySelector('.date-label').textContent;
-                const mediaElement = item.querySelector('img, video');
-                const mediaUrl = mediaElement.src.toLowerCase();
-
-                if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
-                    item.style.display = 'inline-block';
-                } else {
-                    item.style.display = 'none';
+        
+            // Pokaż galerię
+            async function showGallery() {
+                try {
+                    const response = await fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json');
+        
+                    if (response.ok) {
+                        const data = await response.json();
+                        const content = atob(data.content.replace(/\s/g, ''));
+                        const images = JSON.parse(content);
+                        const gallery = document.getElementById('gallery');
+                        gallery.innerHTML = '';
+                        images.forEach(({ url, date }) => {
+                            addMediaToGallery(url, date);
+                        });
+                    } else {
+                        console.error('Error fetching gallery images:', response.status, response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error showing gallery:', error);
                 }
-            });
-        }
-
-        window.onload = function () {
-            showGallery();
-        }
-    </script>
-</body>
-
-</html>
+            }
+        
+            // Filtruj galerię
+            window.filterGallery = function() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const galleryItems = document.querySelectorAll('.gallery-item');
+                galleryItems.forEach(item => {
+                    const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
+                    const dateLabel = item.querySelector('.date-label').textContent;
+                    const mediaElement = item.querySelector('img, video');
+                    const mediaUrl = mediaElement.src.toLowerCase();
+        
+                    if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
+                        item.style.display = 'inline-block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+        
+            window.onload = function() {
+                showGallery();
+            }
+        
+            // Zapisz klip
+            window.saveClip = function() {
+                const clipUrl = document.getElementById('clipUrl').value;
+                if (clipUrl) {
+                    const clipData = {
+                        date: new Date().toISOString(),
+                        link: clipUrl
+                    };
+        
+                    fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            const content = atob(data.content.replace(/\s/g, ''));
+                            const images = JSON.parse(content);
+                            images.push(clipData);
+                            const updatedContent = btoa(JSON.stringify(images, null, 2));
+        
+                            fetch('https://api.github.com/repos/Blushy3/LasekWspomnien/contents/images.json', {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': 'Bearer ghp_YOUR_GITHUB_TOKEN',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    message: 'Add new clip URL',
+                                    content: updatedContent,
+                                    sha: data.sha
+                                })
+                            }).then(() => {
+                                alert('Klip zapisany pomyślnie!');
+                                addMediaToGallery(clipUrl, new Date().toISOString().split('T')[0]);
+                            }).catch(error => {
+                                console.error('Error saving clip:', error);
+                                alert('Błąd zapisu klipu.');
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching existing data:', error);
+                            alert('Błąd odczytu istniejących danych.');
+                        });
+                }
+            }
+        });
+        </script>
+        </body>
+        </html>
