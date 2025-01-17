@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -246,7 +245,6 @@
         }
     </style>
 </head>
-
 <body>
     <main>
         <h1>Lasek Wspomnień</h1>
@@ -260,7 +258,7 @@
             <button class="button" onclick="showClipInput()">Udostępnij klip</button>
         </div>
         <div class="search-container">
-            <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
+            <span class="search-icon">&#128269;</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
         </div>
 
@@ -312,7 +310,6 @@
                     const result = await response.json();
                     const imageUrl = result.data.link;
                     const uploadDate = new Date().toISOString().split('T')[0];
-                    // Zapisz datę w formacie YYYY-MM-DD
 
                     alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                     addMediaToGallery(imageUrl, uploadDate);
@@ -332,8 +329,8 @@
                 if (url.endsWith('.mp4')) {
                     mediaElement = document.createElement('video');
                     mediaElement.src = url;
-                    mediaElement.controls = false; // Disable controls initially
-                    mediaElement.setAttribute('controlsList', 'nodownload'); // Disable download
+                    mediaElement.controls = false;
+                    mediaElement.setAttribute('controlsList', 'nodownload');
                     formatLabel = 'MP4';
                 } else if (url.endsWith('.gif')) {
                     mediaElement = document.createElement('img');
@@ -422,10 +419,7 @@
                     const content = atob(data.content.replace(/\s/g, ''));
                     const images = JSON.parse(content);
 
-                    images.push({
-                        url,
-                        date
-                    });
+                    images.push({ url, date });
                     const updatedContent = btoa(JSON.stringify(images, null, 2));
 
                     const token = 'GQgVLLTIbH6TtxXoAfajR10OoVhLnM15OWMJ';
@@ -460,9 +454,7 @@
                         const images = JSON.parse(content);
                         const gallery = document.getElementById('gallery');
                         gallery.innerHTML = '';
-                        images.forEach(({
-                            url, date
-                        }) => {
+                        images.forEach(({ url, date }) => {
                             addMediaToGallery(url, date);
                         });
                     } else {
@@ -483,4 +475,57 @@
                     const mediaUrl = mediaElement.src.toLowerCase();
 
                     if (formatLabel.includes(searchTerm) || dateLabel.includes(searchTerm) || mediaUrl.includes(searchTerm)) {
-                        item.style.display =
+                        item.style.display = 'inline-block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            window.onload = function() {
+                showGallery();
+            }
+
+            function showMenu() {
+                document.getElementById('menu').style.display = 'block';
+            }
+
+            function showFileUpload() {
+                document.getElementById('file').click();
+            }
+
+            function showClipInput() {
+                document.getElementById('clipInputContainer').style.display = 'block';
+            }
+
+            function saveClip() {
+                const clipUrl = document.getElementById('clipUrl').value;
+                if (clipUrl) {
+                    const clipData = {
+                        date: new Date().toISOString(),
+                        link: clipUrl
+                    };
+
+                    fetch('images.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            data.push(clipData);
+
+                            fetch('images.json', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            }).then(() => {
+                                alert('Klip zapisany pomyślnie!');
+                                document.getElementById('clipInputContainer').style.display = 'none';
+                                document.getElementById('clipUrl').value = '';
+                            }).catch(error => {
+                                console.error('Error saving clip:', error);
+                                alert('Błąd zapisu klipu.');
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching existing data:', error);
+                            alert('Błąd odczytu istniejących
