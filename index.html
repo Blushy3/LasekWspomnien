@@ -465,12 +465,12 @@
                 }
             }
 
-            function filterGallery() {
+            window.filterGallery = function() {
                 const searchTerm = document.getElementById('searchInput').value.toLowerCase();
                 const galleryItems = document.querySelectorAll('.gallery-item');
                 galleryItems.forEach(item => {
                     const formatLabel = item.querySelector('.format-label').textContent.toLowerCase();
-                    const dateLabel = item.querySelector('.date-label').textContent;
+                    const dateLabel = item.querySelector('.date-label').textContent.toLowerCase();
                     const mediaElement = item.querySelector('img, video');
                     const mediaUrl = mediaElement.src.toLowerCase();
 
@@ -485,19 +485,20 @@
             window.onload = function() {
                 showGallery();
             }
-
-            function showMenu() {
+            // Pokaż menu
+            window.showMenu = function() {
                 document.getElementById('menu').style.display = 'block';
             }
 
-            function showFileUpload() {
+            // Pokaż input do przesyłania pliku
+            window.showFileUpload = function() {
                 document.getElementById('file').click();
             }
 
-            function showClipInput() {
+            // Pokaż input do wklejenia linku do klipu
+            window.showClipInput = function() {
                 document.getElementById('clipInputContainer').style.display = 'block';
-            }
-
+            }            
             function saveClip() {
                 const clipUrl = document.getElementById('clipUrl').value;
                 if (clipUrl) {
