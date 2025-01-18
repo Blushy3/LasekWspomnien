@@ -269,13 +269,12 @@
         </div>
         <input type="file" id="file" name="file" style="display: none;" onchange="uploadFile()" />
         <button class="button" id="upload" onclick="document.getElementById('file').click()">Prześlij wspomnienie</button>
+        <div id="errorMessage" style="color: red; display: none;"></div>
         <div class="search-container">
             <span class="search-icon">&#128269;</span> <!-- Ikona lupy -->
             <input type="text" class="search-input" id="searchInput" placeholder="Szukaj wspomnień..." oninput="filterGallery()" />
         </div>
-
         <div id="gallery"></div>
-
         <div class="small-print">
             <p>Strona nie pozwala na dodawanie zdjęć 18+ i NSFW. Każde zdjęcia tego typu będą usuwane ze strony po jakimś czasie. Prosimy o nie dodawanie takich zdjęć.</p>
             <p>Strona jest w fazie beta i nie wiadomo, czy będziemy dalej ją rozwijali.</p>
@@ -301,8 +300,9 @@
         async function uploadFile() {
             const file = document.getElementById('file').files[0];
             const formData = new FormData();
+            const errorMessage = document.getElementById('errorMessage');
             formData.append('image', file);
-
+        
             try {
                 console.log('Starting upload...');
                 const response = await fetch('https://api.imgur.com/3/image', {
@@ -313,18 +313,20 @@
                     },
                     body: formData,
                 });
-
+        
                 if (!response.ok) throw new Error('Upload failed');
                 const result = await response.json();
                 const imageUrl = result.data.link;
                 const uploadDate = new Date().toISOString().split('T')[0];
                 // Zapisz datę w formacie YYYY-MM-DD
-
+        
                 alert('Wspomnienie zostało przesłane! URL wspomnienia: ' + imageUrl);
                 addMediaToGallery(imageUrl, uploadDate);
                 await saveImageUrl(imageUrl, uploadDate);
             } catch (error) {
                 console.error('Error:', error);
+                errorMessage.textContent = 'Obrazek nie został przesłany ze względu na błąd łączności. Numer błędu: ' + error.message;
+                errorMessage.style.display = 'block';
             }
         }
 
